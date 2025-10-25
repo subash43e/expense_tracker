@@ -1,65 +1,132 @@
-import Image from "next/image";
+'use client'
+import { useState, useEffect } from 'react';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import EditExpense from '@/components/EditExpense';
 
 export default function Home() {
+  const [expenses, setExpenses] = useState([]);
+  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingExpense, setEditingExpense] = useState(null);
+
+  useEffect(() => {
+    const fetchExpenses = async () => {
+      const res = await fetch('/api/expenses');
+      const { data } = await res.json();
+      setExpenses(data);
+    };
+    fetchExpenses();
+  }, []);
+
+  const addExpense = async (e) => {
+    e.preventDefault();
+    const res = await fetch('/api/expenses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ description, amount, category }),
+    });
+    const { data } = await res.json();
+    setExpenses([...expenses, data]);
+    setDescription('');
+    setAmount('');
+    setCategory('');
+  };
+
+  const deleteExpense = async (id) => {
+    await fetch(`/api/expenses/${id}`,
+      { method: 'DELETE' });
+    setExpenses(expenses.filter((expense) => expense._id !== id));
+  };
+
+  const openEditModal = (expense) => {
+    setEditingExpense(expense);
+    setIsEditing(true);
+  };
+
+  const closeEditModal = () => {
+    setEditingExpense(null);
+    setIsEditing(false);
+  };
+
+  const saveExpense = async (id, updatedExpense) => {
+    const res = await fetch(`/api/expenses/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedExpense),
+      });
+    const { data } = await res.json();
+    setExpenses(expenses.map((expense) => (expense._id === id ? data : expense)));
+    closeEditModal();
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="p-8 bg-gray-100 min-h-screen">
+      <h1 className="text-4xl font-bold mb-8 text-gray-800">Dashboard</h1>
+      <div className="mb-8 p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-700">Add Expense</h2>
+        <form onSubmit={addExpense} className="flex items-center gap-4">
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="number"
+            placeholder="Amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="Category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button type="submit" className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+            Add
+          </button>
+        </form>
+      </div>
+      <div className="p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-700">Expenses</h2>
+        <ul className="space-y-4">
+          {expenses.map((expense) => (
+            <li key={expense._id} className="flex justify-between items-center p-4 border-b hover:bg-gray-50 transition-colors">
+              <div>
+                <span className="font-bold text-lg text-gray-800">{expense.description}</span>
+                <p className="text-gray-600">${expense.amount}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-gray-600">{expense.category}</div>
+                <button onClick={() => openEditModal(expense)} className="text-blue-500 hover:text-blue-700">
+                  <FiEdit />
+                </button>
+                <button onClick={() => deleteExpense(expense._id)} className="text-red-500 hover:text-red-700">
+                  <FiTrash2 />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {isEditing && (
+        <EditExpense
+          expense={editingExpense}
+          onClose={closeEditModal}
+          onSave={saveExpense}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
     </div>
   );
 }
