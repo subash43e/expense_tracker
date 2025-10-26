@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import AddExpense from "./AddExpense";
 import RecentExpenses from "./RecentExpenses";
-import Sidebar from "./Sidebar";
 import BudgetProgress from "./BudgetProgress";
+import { usePathname } from 'next/navigation';
 
 
 export default function Home() {
@@ -26,18 +26,15 @@ export default function Home() {
     }
   }, [useDark]);
 
-  function toggleDarkMode() {
-    setDark(!useDark);
-  }
+
+
 
   return (
     <div className="flex h-screen bg-slate-100 dark:bg-slate-900">
-      <Sidebar />
       <main className="flex-1 p-6 md:p-10 overflow-y-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-black dark:text-white">Dashboard</h1>
         </div>
-        {/* <button type="button" onClick={toggleDarkMode} className="bg-red-300 border">btn</button> */}
         <section className="mb-10">
           <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Add Expense</h2>
           <BudgetProgress />
