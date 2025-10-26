@@ -2,19 +2,23 @@
 import { useEffect, useState } from "react";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
-export default function RecentExpenses() {
-  const [useExpenses, setExpenses] = useState([]);
+
+export default function RecentExpenses({ initialExpenses }) {
+  const [expenses, setExpenses] = useState(initialExpenses || []);
 
   useEffect(() => {
-    const fetchExpenses = async () => {
-      const res = await fetch("/api/expenses");
-      const data = await res.json();
-      setExpenses(data.data);
-    };
+    if (!initialExpenses) {
+      const fetchExpenses = async () => {
+        const res = await fetch("/api/expenses");
+        const data = await res.json();
+        setExpenses(data.data);
+      };
 
-    fetchExpenses();
-  }, []);
+      fetchExpenses();
+    }
+  }, [initialExpenses]);
 
   const handleDelete = async (id) => {
     const res = await fetch(`/api/expenses/${id}`, {
@@ -22,15 +26,16 @@ export default function RecentExpenses() {
     });
 
     if (res.ok) {
-      setExpenses(useExpenses.filter((expense) => expense._id !== id));
+      setExpenses(expenses.filter((expense) => expense._id !== id));
     }
   };
-  const expenses = useExpenses.slice(0, 10);
+
+  const expensesToDisplay = usePathname() !== "/expenses" ? expenses.slice(0, 10) : expenses;
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 flex flex-col">
       <ul className="divide-y divide-gray-500/20 dark:divide-gray-400/20">
-        {expenses.map((expense) => (
+        {expensesToDisplay.map((expense) => (
           <li
             key={expense._id}
             className="p-4 flex justify-between items-center hover:bg-indigo-500/5 dark:hover:bg-indigo-500/10"
@@ -60,11 +65,13 @@ export default function RecentExpenses() {
           </li>
         ))}
       </ul>
-        <div className="p-4 text-center">
-          <Link href="/expenses" className="text-indigo-500 hover:underline">
+      <div className="p-4 text-center">
+        {usePathname() !== "/expenses" ?
+          < Link href="/expenses" className="text-indigo-500 hover:underline">
             Show More
-          </Link>
-        </div>
-    </div>
+          </Link> : null
+        }
+      </div>
+    </div >
   );
 }

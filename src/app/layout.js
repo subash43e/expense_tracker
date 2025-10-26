@@ -7,7 +7,7 @@ export default function RootLayout({ children }) {
       <body>
         <div className='flex'>
           <Sidebar />
-          <div className='flex-1 bg-[#F9FAFB] dark:bg-[#111827]'>
+          <div className='flex-1 p-6 bg-slate-100 dark:bg-[#111827]'>
             {children}
           </div>
         </div>

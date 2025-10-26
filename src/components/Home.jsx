@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen bg-slate-100 dark:bg-slate-900">
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-black dark:text-white">Dashboard</h1>
         </div>
