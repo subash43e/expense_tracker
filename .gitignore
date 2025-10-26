@@ -43,3 +43,5 @@ src/app/page.js
 openspec
 .opencode
 AGENTS.md
+opencode.json
+.vscode
