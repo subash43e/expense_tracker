@@ -31,7 +31,7 @@ export default function AddExpense() {
   };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md">
+    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
       {message && (
         <div
           className={`p-4 mb-4 text-sm rounded-lg ${message.type === "success"
@@ -42,67 +42,68 @@ export default function AddExpense() {
           {message.text}
         </div>
       )}
-      <form
-        className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end"
-        onSubmit={handleSubmit}
-      >
-        <div className="md:col-span-2">
-          <label
-            className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
-            htmlFor="description"
-          >
-            Description
-          </label>
-          <input
-            className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
-            id="description"
-            name="description"
-            placeholder="e.g. Coffee with friends"
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div className="md:col-span-2">
+            <label
+              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
+              htmlFor="description"
+            >
+              Description
+            </label>
+            <input
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              id="description"
+              name="description"
+              placeholder="e.g. Coffee with friends"
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="">
+            <label
+              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1 "
+              htmlFor="amount"
+            >
+              Amount
+            </label>
+            <input
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827]  border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              id="amount"
+              name="amount"
+              placeholder="$0.00"
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </div>
+          <div className="">
+            <label
+              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
+              htmlFor="category"
+            >
+              Category
+            </label>
+            <input
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              id="category"
+              name="category"
+              placeholder="e.g. Food"
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </div>
         </div>
-        <div>
-          <label
-            className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
-            htmlFor="amount"
+        <div className="flex justify-end mt-6">
+          <button
+            className="border bg-[#6366F1] text-[#F9FAFB] px-6 py-2 rounded-lg shadow hover:bg-[#6366F1]/90 transition w-full md:w-auto"
+            type="submit"
           >
-            Amount
-          </label>
-          <input
-            className="w-full bg-[#F3F4F6] dark:bg-[#111827]  border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
-            id="amount"
-            name="amount"
-            placeholder="$0.00"
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+            Add Expense
+          </button>
         </div>
-        <div>
-          <label
-            className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
-            htmlFor="category"
-          >
-            Category
-          </label>
-          <input
-            className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
-            id="category"
-            name="category"
-            placeholder="e.g. Food"
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
-        </div>
-        <button
-          className="border md:col-start-4 bg-[#6366F1] text-[#F9FAFB] px-4 py-2 rounded-lg justify-center flex items-center shadow hover:bg-#6366F1/90 transition w-full md:w-auto"
-          type="submit"
-        >
-          Add
-        </button>
       </form>
     </div>
   );
