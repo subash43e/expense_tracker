@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Expense from "@/models/Expense";
 
-export async function GET(request, { params }) {
+export async function GET(request, { params: paramsPromise }) {
+  const params = await paramsPromise;
   await dbConnect();
   try {
     const expense = await Expense.findById(params.id);
@@ -16,7 +17,8 @@ export async function GET(request, { params }) {
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(request, { params: paramsPromise }) {
+  const params = await paramsPromise;
   await dbConnect();
   try {
     const body = await request.json();
@@ -33,7 +35,8 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, { params: paramsPromise }) {
+  const params = await paramsPromise;
   await dbConnect();
   try {
     const deletedExpense = await Expense.deleteOne({ _id: params.id });

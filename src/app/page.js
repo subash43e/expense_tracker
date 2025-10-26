@@ -67,49 +67,49 @@ export default function Home() {
   };
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold mb-8 text-gray-800">Dashboard</h1>
-      <div className="mb-8 p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-gray-700">Add Expense</h2>
+    <div className="p-8 bg-gray-100 dark:bg-black min-h-screen">
+      <h1 className="text-4xl font-bold mb-8 text-gray-800 dark:text-gray-100">Dashboard</h1>
+      <div className="mb-8 p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-700 dark:text-gray-200">Add Expense</h2>
         <form onSubmit={addExpense} className="flex items-center gap-4">
           <input
             type="text"
             placeholder="Description"
-            value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={description}
+            className="p-3 w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
           />
           <input
             type="number"
             placeholder="Amount"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-3 w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
           />
           <input
             type="text"
             placeholder="Category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-3 w-full bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors"
           />
-          <button type="submit" className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+          <button type="submit" className="p-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
             Add
           </button>
         </form>
       </div>
-      <div className="p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-4 text-gray-700">Expenses</h2>
+      <div className="p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-700 dark:text-gray-200">Expenses</h2>
         <ul className="space-y-4">
           {expenses.map((expense) => (
-            <li key={expense._id} className="flex justify-between items-center p-4 border-b hover:bg-gray-50 transition-colors">
+            <li key={expense._id} className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
               <div>
-                <span className="font-bold text-lg text-gray-800">{expense.description}</span>
-                <p className="text-gray-600">${expense.amount}</p>
+                <span className="font-bold text-lg text-gray-800 dark:text-gray-100">{expense.description}</span>
+                <p className="text-gray-600 dark:text-gray-400">${expense.amount}</p>
               </div>
               <div className="flex items-center gap-4">
-                <div className="text-gray-600">{expense.category}</div>
-                <button onClick={() => openEditModal(expense)} className="text-blue-500 hover:text-blue-700">
+                <div className="text-gray-600 dark:text-gray-400">{expense.category}</div>
+                <button onClick={() => openEditModal(expense)} className="text-indigo-500 hover:text-indigo-700">
                   <FiEdit />
                 </button>
                 <button onClick={() => deleteExpense(expense._id)} className="text-red-500 hover:text-red-700">
