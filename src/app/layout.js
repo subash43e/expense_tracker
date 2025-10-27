@@ -5,9 +5,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div className='flex'>
+        <div className='flex border h-screen'>
           <Sidebar />
-          <div className='w-full'>
+          <div className='w-full overflow-scroll'>
             {children}
           </div>
         </div>

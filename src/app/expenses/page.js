@@ -8,8 +8,8 @@ export default async function ExpensesPage() {
   const expenses = JSON.parse(JSON.stringify(result));
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-black dark:text-white">All Expenses</h1>
+    <div className=" bg-slate-100 dark:bg-slate-900 p-4">
+      <h1 className="text-3xl font-bold text-black dark:text-white pb-5">All Expenses</h1>
       <RecentExpenses initialExpenses={expenses} />
     </div>
   );

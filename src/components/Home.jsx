@@ -14,7 +14,7 @@ export default function Home() {
     const isDark = localStorage.getItem('useDark') === 'true';
     setDark(isDark);
   }, []);
-
+  //#region use Effect
   useEffect(() => {
     // Apply the theme class to the <html> element and save preference
     if (useDark) {
@@ -43,7 +43,7 @@ export default function Home() {
           <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Add Expense</h2>
           <AddExpense />
         </section>
-        <section>
+        <section className="">
           <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Recent Expenses</h2>
           <RecentExpenses />
         </section>
