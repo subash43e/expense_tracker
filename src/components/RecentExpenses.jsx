@@ -8,16 +8,16 @@ import { FilterUi } from "./FilterUi";
 export default function RecentExpenses({ initialExpenses }) {
   const [expenses, setExpenses] = useState(initialExpenses || []);
   const [isFilter, setFilter] = useState(false);
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear().toString();
-  const currentMonth = currentDate.getMonth().toString();
-  const currentDay = currentDate.getDate().toString();
+  const [showFilterModal, setShowFilterModal] = useState(false);
 
+  // Initialize filter state with empty strings to remove default filtering
   const [useFilterDate, setFilterDate] = useState({
-    filterDay: currentDay,
-    filterMonth: currentMonth,
-    filterYear: currentYear,
+    filterDay: "",
+    filterMonth: "",
+    filterYear: "",
   });
+
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!initialExpenses) {
@@ -80,7 +80,7 @@ export default function RecentExpenses({ initialExpenses }) {
   const currentFilteredExpenses = getFilteredExpenses();
 
   const expensesToDisplay =
-    usePathname() !== "/expenses"
+    pathname !== "/expenses"
       ? currentFilteredExpenses.slice(0, 10)
       : currentFilteredExpenses;
 
@@ -101,15 +101,49 @@ export default function RecentExpenses({ initialExpenses }) {
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 flex flex-col">
-      {/* Filter UI */}
+      {/* Header with "Select Date Range" button */}
+      <div className="p-4 flex justify-between items-center border-b border-gray-500/20 dark:border-gray-400/20 relative">
+        <h2 className="text-xl font-semibold text-black dark:text-white">
+          Expenses
+        </h2>
+        {/* Conditionally render the filter button and modal */}
+        {pathname === "/expenses" && ( // Only show filter button on /expenses route
+          <>
+            <button
+              onClick={() => setShowFilterModal(true)}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Select Date Range
+            </button>
 
-      {/* <FilterUi
-        filterDay={useFilterDate.filterDay}
-        setFilterDate={setFilterDate}
-        filterMonth={useFilterDate.filterMonth}
-        filterYear={useFilterDate.filterYear}
-        monthNames={monthNames}
-      /> */}
+            {/* Filter Modal */}
+            {showFilterModal && (
+              <div className="absolute top-full right-0 mt-2 z-50">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl relative w-72">
+                  <h3 className="text-lg font-bold mb-4 text-black dark:text-white">
+                    Filter Expenses by Date
+                  </h3>
+                  <FilterUi
+                    filterDay={useFilterDate.filterDay}
+                    setFilterDate={setFilterDate}
+                    filterMonth={useFilterDate.filterMonth}
+                    filterYear={useFilterDate.filterYear}
+                    monthNames={monthNames}
+                  />
+                  <div className="mt-6 flex justify-end gap-2">
+                    <button
+                      onClick={() => setShowFilterModal(false)}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 dark:text-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       <ul className="divide-y divide-gray-500/20 dark:divide-gray-400/20">
         {expensesToDisplay.map((expense) => (
@@ -147,7 +181,7 @@ export default function RecentExpenses({ initialExpenses }) {
         ))}
       </ul>
       <div className="p-4 text-center">
-        {usePathname() !== "/expenses" ? (
+        {pathname !== "/expenses" ? ( // Use the pathname variable
           <Link href="/expenses" className="text-indigo-500 hover:underline">
             Show More
           </Link>

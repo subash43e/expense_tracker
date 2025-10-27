@@ -18,7 +18,7 @@ export const FilterUi = ({
   };
 
   return (
-    <div className="p-4 flex gap-2 flex-wrap">
+    <div className="flex gap-2 flex-wrap"> {/* Removed 'p-4' */}
       <select
         value={filterYear}
         onChange={handleYearChange}
