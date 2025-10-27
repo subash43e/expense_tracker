@@ -33,7 +33,7 @@ export default function RecentExpenses({ initialExpenses }) {
   const expensesToDisplay = usePathname() !== "/expenses" ? expenses.slice(0, 10) : expenses;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 flex flex-col">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-black flex flex-col">
       <ul className="divide-y divide-gray-500/20 dark:divide-gray-400/20">
         {expensesToDisplay.map((expense) => (
           <li

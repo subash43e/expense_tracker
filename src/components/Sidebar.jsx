@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-[#FFFFFF] dark:bg-[#1F2937] shrink-0 shadow-lg hidden md:flex flex-col">
+    <aside className="w-64 bg-[#FFFFFF] dark:bg-[#1F2937] shrink-0 shadow-lg md:flex flex-col">
       <div className="p-6 text-2xl font-bold text-[#6366F1]">
         Expense Tracker
       </div>
