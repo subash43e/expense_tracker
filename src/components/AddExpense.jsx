@@ -52,7 +52,7 @@ export default function AddExpense() {
               Description
             </label>
             <input
-              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1 h-8 text-black placeholder:pl-2 pl-2"
               id="description"
               name="description"
               placeholder="e.g. Coffee with friends"
@@ -69,7 +69,7 @@ export default function AddExpense() {
               Amount
             </label>
             <input
-              className="w-full bg-[#F3F4F6] dark:bg-[#111827]  border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827]  border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black placeholder:pl-2 pl-2 h-8"
               id="amount"
               name="amount"
               placeholder="$0.00"
@@ -86,7 +86,7 @@ export default function AddExpense() {
               Category
             </label>
             <input
-              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1"
+              className="w-full bg-[#F3F4F6] dark:bg-[#111827] border border-[#6B7280]/30 dark:border-[#9CA3AF]/30 rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black placeholder:pl-2 pl-2 h-8"
               id="category"
               name="category"
               placeholder="e.g. Food"
