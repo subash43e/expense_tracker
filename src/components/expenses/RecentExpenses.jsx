@@ -3,9 +3,9 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import FilterModal from "./FilterModal";
+import FilterModal from "../filters-and-sorts/FilterModal";
 import ExpenseList from "./ExpenseList";
-import Sortbtn from "./Sortbtn";
+import SortControls from "../filters-and-sorts/SortControls";
 
 // Move constants OUTSIDE component - this prevents recreation on every render
 export default function RecentExpenses({ initialExpenses }) {
@@ -225,7 +225,7 @@ export default function RecentExpenses({ initialExpenses }) {
         </h2>
         {pathname === "/expenses" && (
           <div className="flex gap-2">
-            <Sortbtn
+            <SortControls
               showSortModal={showSortModal}
               setShowSortModal={setShowSortModal}
               sortBy={sortBy}

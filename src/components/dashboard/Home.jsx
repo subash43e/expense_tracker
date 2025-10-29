@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
 import AddExpense from "./AddExpense";
-import RecentExpenses from "./RecentExpenses";
 import BudgetProgress from "./BudgetProgress";
 import { usePathname } from 'next/navigation';
+import RecentExpenses from "../expenses/RecentExpenses";
 
 
 export default function Home() {

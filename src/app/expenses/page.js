@@ -1,4 +1,4 @@
-import RecentExpenses from "@/components/RecentExpenses";
+import RecentExpenses from "@/components/expenses/RecentExpenses";
 import dbConnect from "@/lib/db";
 import Expense from "@/models/Expense";
 

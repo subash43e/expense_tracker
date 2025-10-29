@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Sortbtn({
+export default function SortControls({
   showSortModal,
   setShowSortModal,
   sortBy,
