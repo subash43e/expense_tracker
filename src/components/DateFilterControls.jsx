@@ -1,10 +1,10 @@
-export const FilterUi = ({
+export default function DateFilterControls({
   filterDay,
   filterMonth,
   filterYear,
   setFilterDate,
   monthNames,
-}) => {
+}) {
   const handleYearChange = (e) => {
     setFilterDate((prev) => ({ ...prev, filterYear: e.target.value }));
   };
@@ -18,7 +18,9 @@ export const FilterUi = ({
   };
 
   return (
-    <div className="flex gap-2 flex-wrap"> {/* Removed 'p-4' */}
+    <div className="flex gap-2 flex-wrap">
+      {" "}
+      {/* Removed 'p-4' */}
       <select
         value={filterYear}
         onChange={handleYearChange}
@@ -57,4 +59,4 @@ export const FilterUi = ({
       />
     </div>
   );
-};
+}
