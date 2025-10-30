@@ -6,6 +6,7 @@ import useFetchExpenses from "@/hooks/useFetchExpenses";
 import useModalState from "@/hooks/useModalState";
 import ExpenseFilters from "./ExpenseFilters";
 import ExpenseList from "./ExpenseList";
+import GroupedExpenseList from "./GroupedExpenseList";
 import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import styles from "@/styles/RecentExpenses.module.css";
 
@@ -277,11 +278,20 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
           Loading expenses...
         </div>
       ) : (
-        <ExpenseList
-          expensesToDisplay={expensesToDisplay}
-          onDelete={handleDelete}
-          pathname={pathname}
-        />
+        <ul className="divide-y divide-gray-500/20 dark:divide-gray-400/20">
+          {pathname === "/expenses" ? (
+            <GroupedExpenseList
+              expensesToDisplay={expensesToDisplay}
+              handleDelete={handleDelete}
+            />
+          ) : (
+            <ExpenseList
+              expensesToDisplay={expensesToDisplay}
+              onDelete={handleDelete}
+              pathname={pathname}
+            />
+          )}
+        </ul>
       )}
 
       {/* Delete Confirmation Modal */}
