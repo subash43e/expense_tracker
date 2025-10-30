@@ -91,11 +91,11 @@ ExpenseFilters.propTypes = {
   setShowSortModal: PropTypes.func.isRequired,
   filterModalRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.object })
   ]),
   sortModalRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.object })
   ]),
   sortBy: PropTypes.string.isRequired,
   setSortBy: PropTypes.func.isRequired,

@@ -1,6 +1,10 @@
-
 import Home from "@/components/dashboard/Home";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function Page() {
-  return <Home />;
+  return (
+    <ProtectedRoute>
+      <Home />
+    </ProtectedRoute>
+  );
 }

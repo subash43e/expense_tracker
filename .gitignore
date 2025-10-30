@@ -44,4 +44,5 @@ src/app/page.js
 AGENTS.md
 opencode.json
 .vscode
-.github/copilot-instructions.md
+.github/
+openspec/

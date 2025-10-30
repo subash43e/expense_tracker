@@ -1,8 +1,19 @@
 "use client";
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/useAuth';
+import { AiOutlineLogout } from 'react-icons/ai';
 
 export default function Sidebar() {
+  const router = useRouter();
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
   return (
     <aside 
       className="w-64 bg-white dark:bg-gray-800 shrink-0 shadow-lg md:flex flex-col border-r border-gray-200 dark:border-gray-700"
@@ -10,7 +21,7 @@ export default function Sidebar() {
       aria-label="Main navigation"
     >
       <div className="p-6">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-bold bg-linear-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
           Expense Tracker
         </h1>
       </div>
@@ -61,6 +72,42 @@ export default function Sidebar() {
           Settings
         </Link>
       </nav>
+
+      {/* User Profile Section */}
+      {isAuthenticated && user && (
+        <div className="border-t border-gray-200 dark:border-gray-700 p-4 space-y-3">
+          <div className="px-4 py-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg">
+            <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">Logged in as</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{user.email}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900 hover:bg-red-100 dark:hover:bg-red-800 text-red-700 dark:text-red-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
+            aria-label="Logout"
+          >
+            <AiOutlineLogout className="text-lg" />
+            Logout
+          </button>
+        </div>
+      )}
+
+      {/* Auth Links for Unauthenticated Users */}
+      {!isAuthenticated && (
+        <div className="border-t border-gray-200 dark:border-gray-700 p-4 space-y-2">
+          <Link
+            href="/login"
+            className="block w-full px-4 py-2.5 bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Login
+          </Link>
+          <Link
+            href="/register"
+            className="block w-full px-4 py-2.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 rounded-lg font-medium transition-colors text-center focus:outline-none focus:ring-2 focus:ring-gray-500"
+          >
+            Register
+          </Link>
+        </div>
+      )}
     </aside>
   );
 }
