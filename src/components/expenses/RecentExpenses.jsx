@@ -8,12 +8,15 @@ import ExpenseFilters from "./ExpenseFilters";
 import ExpenseList from "./ExpenseList";
 import GroupedExpenseList from "./GroupedExpenseList";
 import DeleteConfirmModal from "../modals/DeleteConfirmModal";
+import ExportButton from "../export/ExportButton";
+import { authFetch } from "@/lib/authFetch";
 import styles from "@/styles/RecentExpenses.module.css";
 
 // Move constants OUTSIDE component - this prevents recreation on every render
 export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
   const {
     expenses,
+    setExpenses,
     loading,
     error,
     fetchExpenses,
@@ -45,10 +48,9 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!initialExpenses) {
-      fetchExpenses();
-    }
-  }, [initialExpenses, fetchExpenses]);
+    // Always fetch expenses on mount to ensure fresh data
+    fetchExpenses();
+  }, [fetchExpenses]);
 
   // Close modal on ESC key press - ACCESSIBILITY WIN!
   useEffect(() => {
@@ -107,7 +109,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
       // Ensure id is a string
       const expenseId = typeof id === 'object' ? id.toString() : id;
       
-      const res = await fetch(`/api/expenses/${expenseId}`, { method: "DELETE" });
+      const res = await authFetch(`/api/expenses/${expenseId}`, { method: "DELETE" });
       const data = await res.json();
       
       if (!res.ok || !data.success) {
@@ -257,6 +259,14 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
 
   return (
     <div className={styles.recentExpensesContainer}>
+      {/* Export buttons for /expenses page */}
+      {pathname === "/expenses" && (
+        <div className="flex justify-end gap-3 mb-4">
+          <ExportButton expenses={expenses} variant="csv" />
+          <ExportButton expenses={expenses} variant="json" />
+        </div>
+      )}
+      
       <ExpenseFilters
         showFilterModal={showFilterModal}
         setShowFilterModal={setShowFilterModal}

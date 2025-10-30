@@ -2,6 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
+import { authFetch } from "@/lib/authFetch";
 
 export default function AddExpense({ onSuccess }) {
   const [description, setDescription] = useState("");
@@ -60,7 +61,7 @@ export default function AddExpense({ onSuccess }) {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/expenses", {
+      const res = await authFetch("/api/expenses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

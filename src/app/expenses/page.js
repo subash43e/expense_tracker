@@ -1,8 +1,10 @@
 import ExpensesPageClient from "@/components/expenses/ExpensesPageClient";
-import { getAllExpensesSimple } from "@/lib/expenses";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
-export default async function ExpensesPage() {
-  const data = await getAllExpensesSimple();
-  const expenses = JSON.parse(JSON.stringify(data));
-  return <ExpensesPageClient initialExpenses={expenses} />;
+export default function ExpensesPage() {
+  return (
+    <ProtectedRoute>
+      <ExpensesPageClient />
+    </ProtectedRoute>
+  );
 }

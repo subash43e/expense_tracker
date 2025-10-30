@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
+import { authFetch } from "@/lib/authFetch";
 
 export default function EditExpense({ expense }) {
   const router = useRouter();
@@ -63,7 +64,7 @@ export default function EditExpense({ expense }) {
     setIsLoading(true);
 
     try {
-      const res = await fetch(`/api/expenses/${expense._id}`, {
+      const res = await authFetch(`/api/expenses/${expense._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -273,7 +274,7 @@ export default function EditExpense({ expense }) {
             className={`px-8 py-3 rounded-lg font-semibold transition-all duration-200 transform flex items-center justify-center gap-2 ${
               isLoading
                 ? "bg-indigo-400 text-white cursor-not-allowed"
-                : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
+                : "bg-linear-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 hover:scale-105 shadow-lg hover:shadow-xl"
             }`}
             type="submit"
             disabled={isLoading}

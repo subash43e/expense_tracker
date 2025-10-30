@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import ExportButton from "../export/ExportButton";
+import { authFetch } from "@/lib/authFetch";
 import {
   BarChart,
   Bar,
@@ -40,7 +41,7 @@ export default function Analytics() {
 
   const fetchExpenses = async () => {
     try {
-      const res = await fetch("/api/expenses");
+      const res = await authFetch("/api/expenses");
       const data = await res.json();
       const expensesData = data.expenses || data.data || [];
       setExpenses(expensesData);

@@ -3,6 +3,12 @@ import mongoose from "mongoose";
 
 const expenseSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+      index: true,
+    },
     description: {
       type: String,
       required: true,
@@ -24,9 +30,9 @@ const expenseSchema = new mongoose.Schema(
 );
 
 // Add indexes for frequently queried fields to improve performance
-expenseSchema.index({ date: -1 }); // For sorting by date (most common query)
-expenseSchema.index({ category: 1 }); // For filtering by category
-expenseSchema.index({ date: -1, category: 1 }); // Compound index for date + category queries
+expenseSchema.index({ userId: 1, date: -1 }); // Most common query: user's expenses sorted by date
+expenseSchema.index({ userId: 1, category: 1 }); // For filtering by user and category
+expenseSchema.index({ userId: 1, date: -1, category: 1 }); // Compound index for user + date + category queries
 
 const Expense = mongoose.models.Expense || mongoose.model("Expense", expenseSchema);
 

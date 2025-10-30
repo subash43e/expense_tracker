@@ -1,10 +1,20 @@
 import { modifyExpense } from "@/lib/handlers/expenseHandlers";
 import { objectIdSchema } from "@/lib/validations";
+import { requireAuth } from "@/lib/auth";
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
 
 export async function handleUpdateExpense(request, params) {
   try {
+    // Check authentication
+    const { userId, error } = requireAuth(request);
+    if (error) {
+      return NextResponse.json(
+        { success: false, error: error.message },
+        { status: error.status }
+      );
+    }
+
     const resolvedParams = await Promise.resolve(params);
     const id = resolvedParams.id;
 
@@ -13,7 +23,7 @@ export async function handleUpdateExpense(request, params) {
 
     const body = await request.json();
 
-    const expense = await modifyExpense(id, body);
+    const expense = await modifyExpense(id, userId, body);
     if (!expense) {
       return NextResponse.json(
         { success: false, error: "Expense not found" },

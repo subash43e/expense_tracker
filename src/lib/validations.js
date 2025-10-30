@@ -56,3 +56,10 @@ export const expenseQuerySchema = z.object({
   sortOrder: z.enum(["asc", "desc"]).optional(),
   category: z.string().optional(),
 });
+
+/**
+ * Validation schema for MongoDB ObjectId.
+ */
+export const objectIdSchema = z
+  .string()
+  .regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid ObjectId format" });

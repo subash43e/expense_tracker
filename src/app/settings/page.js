@@ -1,10 +1,12 @@
 "use client";
 
 import DarkModeToggle from "@/components/layout/DarkModeToggle";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 
 export default function SettingsPage() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -121,6 +123,7 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

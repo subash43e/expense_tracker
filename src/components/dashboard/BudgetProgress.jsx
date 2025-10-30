@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
+import { authFetch } from "@/lib/authFetch";
 
 export default function BudgetProgress() {
   const [currentSpending, setCurrentSpending] = useState(0);
@@ -16,7 +17,7 @@ export default function BudgetProgress() {
 
   useEffect(() => {
     const fetchExpenses = async () => {
-      const res = await fetch("/api/expenses");
+      const res = await authFetch("/api/expenses");
       const data = await res.json();
       
       // Handle both response formats: paginated (data.expenses) and simple (data.data)

@@ -11,35 +11,37 @@ export function AuthProvider({ children }) {
 
   const clearError = useCallback(() => setError(null), []);
 
-  // Check token on mount
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('expenseTrackerToken');
-        if (token) {
-          const response = await fetch('/api/auth/me', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+  const validateToken = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('expenseTrackerToken');
+      if (!token) {
+        setUser(null);
+        return;
+      }
 
-          if (response.ok) {
-            const data = await response.json();
-            setUser(data.user);
-          } else {
-            localStorage.removeItem('expenseTrackerToken');
-            setUser(null);
-          }
-        }
-      } catch (err) {
-        console.error('Auth check failed:', err);
+      const response = await fetch('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+      } else {
         localStorage.removeItem('expenseTrackerToken');
         setUser(null);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    checkAuth();
+    } catch (err) {
+      console.error('Token validation failed:', err);
+      localStorage.removeItem('expenseTrackerToken');
+      setUser(null);
+    }
   }, []);
+
+  // Check token on mount
+  useEffect(() => {
+    setLoading(true);
+    validateToken().finally(() => setLoading(false));
+  }, [validateToken]);
 
   const login = useCallback(async (email, password) => {
     setLoading(true);
@@ -95,6 +97,19 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('expenseTrackerToken');
     setUser(null);
     setError(null);
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setError('Session expired. Please log in again.');
+      setUser(null);
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+
+    return () => {
+      window.removeEventListener('auth:unauthorized', handleUnauthorized);
+    };
   }, []);
 
   const value = {

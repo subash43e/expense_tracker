@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { authFetch } from "@/lib/authFetch";
 
 export default function useFetchExpenses(initialExpenses) {
   const [expenses, setExpenses] = useState(initialExpenses || []);
@@ -10,7 +11,7 @@ export default function useFetchExpenses(initialExpenses) {
     setError(null);
     try {
       const query = new URLSearchParams(queryParams).toString();
-      const res = await fetch(`/api/expenses?${query}`);
+      const res = await authFetch(`/api/expenses?${query}`);
       if (!res.ok) {
         throw new Error(`Failed to fetch: ${res.status}`);
       }
@@ -24,5 +25,5 @@ export default function useFetchExpenses(initialExpenses) {
     }
   }, []);
 
-  return { expenses, loading, error, fetchExpenses };
+  return { expenses, setExpenses, loading, error, fetchExpenses };
 }

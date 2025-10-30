@@ -4,6 +4,7 @@ import Expense from "@/models/Expense";
 /**
  * Fetch all expenses with pagination, sorting, and filtering options.
  * @param {Object} options - Query options.
+ * @param {string} options.userId - User ID to filter expenses by.
  * @param {number} [options.page=1] - Page number for pagination.
  * @param {number} [options.limit=100] - Number of items per page.
  * @param {string} [options.sortBy="date"] - Field to sort by.
@@ -15,6 +16,7 @@ export async function getAllExpenses(options = {}) {
   await dbConnect();
 
   const {
+    userId,
     page = 1,
     limit = 100,
     sortBy = "date",
@@ -22,7 +24,15 @@ export async function getAllExpenses(options = {}) {
     category = null,
   } = options;
 
-  const query = category ? { category } : {};
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+
+  const query = { userId };
+  if (category) {
+    query.category = category;
+  }
+
   const skip = (page - 1) * limit;
   const sort = { [sortBy]: sortOrder === "desc" ? -1 : 1 };
 
@@ -45,29 +55,45 @@ export async function getAllExpenses(options = {}) {
 
 /**
  * Fetch all expenses without pagination.
+ * @param {string} userId - User ID to filter expenses by.
  * @returns {Promise<Array>} - List of all expenses.
  */
-export async function getAllExpensesSimple() {
+export async function getAllExpensesSimple(userId) {
   await dbConnect();
-  return Expense.find({}).sort({ date: -1 }).lean();
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+  return Expense.find({ userId }).sort({ date: -1 }).lean();
 }
 
 export async function createExpense(data) {
   await dbConnect();
+  if (!data.userId) {
+    throw new Error('userId is required');
+  }
   return Expense.create(data);
 }
 
-export async function getExpenseById(id) {
+export async function getExpenseById(id, userId) {
   await dbConnect();
-  return Expense.findById(id);
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+  return Expense.findOne({ _id: id, userId });
 }
 
-export async function updateExpense(id, data) {
+export async function updateExpense(id, userId, data) {
   await dbConnect();
-  return Expense.findByIdAndUpdate(id, data, { new: true });
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+  return Expense.findOneAndUpdate({ _id: id, userId }, data, { new: true });
 }
 
-export async function deleteExpense(id) {
+export async function deleteExpense(id, userId) {
   await dbConnect();
-  return Expense.findByIdAndDelete(id);
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+  return Expense.findOneAndDelete({ _id: id, userId });
 }
