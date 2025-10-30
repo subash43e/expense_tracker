@@ -1,0 +1,47 @@
+.recentExpensesContainer {
+  background-color: #FFFFFF;
+  color: #1F2937;
+  border: 1px solid #E5E7EB;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .recentExpensesContainer {
+  background-color: #1F2937;
+  color: #F9FAFB;
+  border-color: #374151;
+}
+
+.loadingMessage {
+  padding: 2rem;
+  text-align: center;
+  color: #6B7280;
+}
+
+:global(.dark) .loadingMessage {
+  color: #9CA3AF;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+:global(.dark) .title {
+  color: #F9FAFB;
+}
+
+.noExpenses {
+  padding: 2rem;
+  text-align: center;
+  color: #6B7280;
+  background-color: #F9FAFB;
+}
+
+:global(.dark) .noExpenses {
+  color: #9CA3AF;
+  background-color: #111827;
+}

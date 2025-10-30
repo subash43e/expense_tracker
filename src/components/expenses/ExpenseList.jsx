@@ -5,8 +5,8 @@ import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
 
 export default function ExpenseList({
-  expensesToDisplay,
-  handleDelete,
+  expensesToDisplay = [],
+  onDelete,
   pathname,
 }) {
   return (
@@ -19,31 +19,31 @@ export default function ExpenseList({
         expensesToDisplay.map((expense) => (
           <li
             key={expense._id}
-            className="p-4 flex justify-between items-center hover:bg-indigo-500/5 dark:hover:bg-indigo-500/10 transition-colors"
+            className="p-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border-b border-gray-200 dark:border-gray-700/50"
           >
             <div>
-              <p className="font-medium text-black dark:text-gray-50">
+              <p className="font-medium text-gray-900 dark:text-gray-100">
                 {expense.description}
               </p>
               <p></p>
-              <p className="text-sm text-black dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 ${expense.amount}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-black dark:text-gray-400 mr-4">
+              <span className="text-gray-600 dark:text-gray-300 mr-4">
                 {expense.category}
               </span>
               <Link
                 href={`/expenses/edit/${expense._id}`}
-                className="p-2 text-black dark:text-gray-400 hover:text-indigo-500 transition-colors"
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors"
                 aria-label={`Edit ${expense.description}`}
               >
                 <BsFillPencilFill className="text-xl" />
               </Link>
               <button
-                className="p-2 text-black dark:text-gray-400 hover:text-red-500 transition-colors"
-                onClick={() => handleDelete(expense._id)}
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                onClick={() => onDelete(expense._id)}
                 aria-label={`Delete ${expense.description}`}
               >
                 <BsTrash3 className="text-xl" />
