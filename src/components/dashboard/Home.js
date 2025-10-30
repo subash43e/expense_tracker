@@ -15,7 +15,7 @@ export default function Home() {
         </div>
         <section className="mb-10">
           <h2 className="text-2xl text-gray-900 font-semibold mb-4 dark:text-white">Budget Progress</h2>
-          <BudgetProgress />
+          <BudgetProgress key={refreshKey} />
         </section>
         <section className="mb-10">
           <h2 className="text-2xl text-gray-900 font-semibold mb-4 dark:text-white">Add Expense</h2>
