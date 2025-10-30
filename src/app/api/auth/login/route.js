@@ -3,7 +3,10 @@ import dbConnect from '@/lib/db';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'default_secret';
+const SECRET_KEY = process.env.JWT_SECRET;
+if (!SECRET_KEY) {
+  throw new Error("JWT_SECRET is not defined. Please set it in the environment variables.");
+}
 
 export async function POST(req) {
   try {

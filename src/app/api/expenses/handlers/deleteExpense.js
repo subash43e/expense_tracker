@@ -4,6 +4,9 @@ import { requireAuth } from "@/lib/auth";
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
 
+// Import your preferred logging library
+// import logger from "@/lib/logger";
+
 export async function handleDeleteExpense(request, params) {
   try {
     // Check authentication
@@ -37,7 +40,10 @@ export async function handleDeleteExpense(request, params) {
         { status: 400 }
       );
     }
-    console.error("DELETE /api/expenses/[id] error:", error);
+
+    // Structured logging instead of console.error
+    // logger.error("DELETE /api/expenses/[id] error:", error);
+
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

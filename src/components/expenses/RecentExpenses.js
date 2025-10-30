@@ -10,6 +10,7 @@ import GroupedExpenseList from "./GroupedExpenseList";
 import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ExportButton from "../export/ExportButton";
 import { authFetch } from "@/lib/authFetch";
+import { useToast } from "@/components/common/Toast";
 import styles from "@/styles/RecentExpenses.module.css";
 
 // Move constants OUTSIDE component - this prevents recreation on every render
@@ -46,6 +47,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
   const [sortOrder, setSortOrder] = useState("desc");
 
   const pathname = usePathname();
+  const { toast } = useToast();
 
   useEffect(() => {
     // Always fetch expenses on mount to ensure fresh data
@@ -119,7 +121,11 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
       // Rollback on error
       console.error("Failed to delete expense:", err);
       setExpenses(previousExpenses);
-      alert(`Failed to delete expense: ${err.message}`);
+      toast({
+        title: "Error",
+        description: `Failed to delete expense: ${err.message}`,
+        variant: "destructive",
+      });
     } finally {
       setIsDeleting(false);
       setExpenseToDelete(null);

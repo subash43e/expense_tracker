@@ -25,8 +25,6 @@ export async function GET(request) {
     const sortBy = searchParams.get("sortBy");
     const sortOrder = searchParams.get("sortOrder");
 
-    console.log("Incoming query parameters:", { page, limit, category, sortBy, sortOrder });
-
     // Build options object for getAllExpenses
     const options = { userId };
     if (page) options.page = parseInt(page, 10);

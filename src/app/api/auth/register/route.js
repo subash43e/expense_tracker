@@ -1,5 +1,6 @@
 import User from '@/models/User';
 import dbConnect from '@/lib/db';
+import bcrypt from 'bcrypt';
 
 export async function POST(req) {
   try {
@@ -14,8 +15,9 @@ export async function POST(req) {
       });
     }
 
-    // Create new user
-    const newUser = new User({ email, passwordHash: password });
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ email, passwordHash: hashedPassword });
     await newUser.save();
 
     return new Response(JSON.stringify({ message: 'User registered successfully' }), {

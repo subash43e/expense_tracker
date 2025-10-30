@@ -4,6 +4,9 @@ import { requireAuth } from "@/lib/auth";
 import { ZodError } from "zod";
 import { NextResponse } from "next/server";
 
+// Import your preferred logging library
+// import logger from "@/lib/logger";
+
 export async function handleGetExpenseById(request, params) {
   try {
     // Check authentication
@@ -36,7 +39,10 @@ export async function handleGetExpenseById(request, params) {
         { status: 400 }
       );
     }
-    console.error("GET /api/expenses/[id] error:", error);
+
+    // Structured logging instead of console.error
+    // logger.error("GET /api/expenses/[id] error:", error);
+
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }
