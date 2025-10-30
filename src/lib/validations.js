@@ -63,3 +63,30 @@ export const expenseQuerySchema = z.object({
 export const objectIdSchema = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid ObjectId format" });
+
+/**
+ * Validation schema for user registration.
+ */
+export const registerSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .min(1, { message: "Email is required" }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters" })
+    .max(100, { message: "Password must be less than 100 characters" }),
+});
+
+/**
+ * Validation schema for user login.
+ */
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .email({ message: "Invalid email address" })
+    .min(1, { message: "Email is required" }),
+  password: z
+    .string()
+    .min(1, { message: "Password is required" }),
+});

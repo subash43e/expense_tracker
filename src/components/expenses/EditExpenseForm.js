@@ -17,7 +17,7 @@ export default function EditExpenseForm({ expense }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log("Form submitted", formData);
+    // Form data is handled by parent component
   };
 
   return (

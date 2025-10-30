@@ -1,31 +1,36 @@
-import User from '@/models/User';
-import dbConnect from '@/lib/db';
-import bcrypt from 'bcrypt';
+import { registerUser } from '@/lib/users';
+import { registerSchema } from '@/lib/validations';
+import { NextResponse } from 'next/server';
+import { ZodError } from 'zod';
 
 export async function POST(req) {
   try {
-    await dbConnect();
-    const { email, password } = await req.json();
+    const body = await req.json();
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return new Response(JSON.stringify({ error: 'User already exists' }), {
-        status: 400,
-      });
+    // Validate request body
+    const { email, password } = registerSchema.parse(body);
+
+    // Delegate to lib function
+    const user = await registerUser(email, password);
+
+    return NextResponse.json({ 
+      success: true,
+      message: 'User registered successfully',
+      user
+    }, { status: 201 });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Validation failed',
+        issues: error.errors
+      }, { status: 400 });
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, passwordHash: hashedPassword });
-    await newUser.save();
-
-    return new Response(JSON.stringify({ message: 'User registered successfully' }), {
-      status: 201,
-    });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-    });
+    const status = error.message === 'User already exists' ? 400 : 500;
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status });
   }
 }

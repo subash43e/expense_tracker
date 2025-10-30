@@ -1,51 +1,36 @@
-import User from '@/models/User';
-import dbConnect from '@/lib/db';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-
-const SECRET_KEY = process.env.JWT_SECRET;
-if (!SECRET_KEY) {
-  throw new Error("JWT_SECRET is not defined. Please set it in the environment variables.");
-}
+import { loginUser } from '@/lib/users';
+import { loginSchema } from '@/lib/validations';
+import { NextResponse } from 'next/server';
+import { ZodError } from 'zod';
 
 export async function POST(req) {
   try {
-    await dbConnect();
-    const { email, password } = await req.json();
+    const body = await req.json();
 
-    // Find user by email
-    const user = await User.findOne({ email });
-    if (!user) {
-      return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-        status: 401,
-      });
-    }
+    // Validate request body
+    const { email, password } = loginSchema.parse(body);
 
-    // Check password
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    if (!isMatch) {
-      return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-        status: 401,
-      });
-    }
+    // Delegate to lib function
+    const result = await loginUser(email, password);
 
-    // Generate JWT
-    const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, {
-      expiresIn: '1h',
-    });
-
-    return new Response(JSON.stringify({ 
-      token,
-      user: {
-        id: user._id.toString(),
-        email: user.email
-      }
-    }), {
-      status: 200,
-    });
+    return NextResponse.json({ 
+      success: true,
+      token: result.token,
+      user: result.user
+    }, { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-    });
+    if (error instanceof ZodError) {
+      return NextResponse.json({ 
+        success: false, 
+        error: 'Validation failed',
+        issues: error.errors
+      }, { status: 400 });
+    }
+
+    const status = error.message === 'Invalid credentials' ? 401 : 500;
+    return NextResponse.json({ 
+      success: false, 
+      error: error.message 
+    }, { status });
   }
 }

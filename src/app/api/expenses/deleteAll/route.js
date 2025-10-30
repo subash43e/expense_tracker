@@ -1,17 +1,19 @@
-import { getUserIdFromRequest } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
+import { NextResponse } from 'next/server';
 import deleteAllExpenses from '../handlers/deleteAllExpenses';
-// import logger from '@/lib/logger'; // Import your logger
 
 export async function POST(req) {
   try {
-    const userId = getUserIdFromRequest(req);
-    if (!userId) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
+    // Use requireAuth for proper authentication
+    const { userId, error } = requireAuth(req);
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message }, { status: error.status });
     }
+
     await deleteAllExpenses(userId);
-    return new Response(JSON.stringify({ success: true }), { status: 200 });
+    return NextResponse.json({ success: true, message: 'All expenses deleted successfully' }, { status: 200 });
   } catch (err) {
-    // logger.error('Delete all expenses error:', err); // Log the error using your logging library
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
+    console.error('Delete all expenses error:', err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

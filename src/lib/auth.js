@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-const SECRET_KEY = process.env.JWT_SECRET || 'default_secret';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
+const SECRET_KEY = process.env.JWT_SECRET;
 
 /**
  * Extract and verify user ID from authorization header

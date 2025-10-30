@@ -40,12 +40,6 @@ npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-### Testing
-- Ensure all tests pass before committing changes.
-- Run tests:
-  ```bash
-  npm test
-  ```
 
 ## Project Structure
 - `src/app/`: Contains pages and API routes.

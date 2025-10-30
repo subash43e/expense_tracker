@@ -1,3 +1,5 @@
+import { requireAuth } from '@/lib/auth';
+import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 const SECRET_KEY = process.env.JWT_SECRET;
@@ -7,20 +9,20 @@ if (!SECRET_KEY) {
 
 export async function GET(req) {
   try {
-    const token = req.headers.get('Authorization')?.split(' ')[1];
-    if (!token) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-      });
+    const { userId, error } = requireAuth(req);
+    if (error) {
+      return NextResponse.json({ success: false, error: error.message }, { status: error.status });
     }
 
+    // Get full user data from token
+    const token = req.headers.get('Authorization')?.split(' ')[1];
     const decoded = jwt.verify(token, SECRET_KEY);
-    return new Response(JSON.stringify({ user: decoded }), {
-      status: 200,
-    });
+    
+    return NextResponse.json({ 
+      success: true, 
+      user: { id: decoded.id, email: decoded.email } 
+    }, { status: 200 });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-    });
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 }

@@ -97,3 +97,17 @@ export async function deleteExpense(id, userId) {
   }
   return Expense.findOneAndDelete({ _id: id, userId });
 }
+
+/**
+ * Delete all expenses for a user
+ * @param {string} userId - User ID
+ * @returns {Promise<Object>} - Deletion result
+ */
+export async function deleteAllExpenses(userId) {
+  await dbConnect();
+  if (!userId) {
+    throw new Error('userId is required');
+  }
+  const result = await Expense.deleteMany({ userId });
+  return { deletedCount: result.deletedCount };
+}
