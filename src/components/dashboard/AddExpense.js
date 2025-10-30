@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
@@ -12,6 +12,13 @@ export default function AddExpense({ onSuccess }) {
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (message?.type === "success") {
+      const timer = setTimeout(() => setMessage(null), 5000); // Auto-hide after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const validateForm = () => {
     const newErrors = {};

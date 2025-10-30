@@ -125,6 +125,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
         title: "Error",
         description: `Failed to delete expense: ${err.message}`,
         variant: "destructive",
+        duration: 5000, // Auto-hide after 5 seconds
       });
     } finally {
       setIsDeleting(false);
