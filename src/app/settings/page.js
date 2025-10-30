@@ -2,8 +2,12 @@
 
 import DarkModeToggle from "@/components/layout/DarkModeToggle";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import ExportButton from "@/components/export/ExportButton";
+import useFetchExpenses from "@/hooks/useFetchExpenses";
+import { authFetch } from "@/lib/authFetch";
 
 export default function SettingsPage() {
+  const { expenses, loading } = useFetchExpenses();
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
@@ -99,12 +103,8 @@ export default function SettingsPage() {
                   Download all your expense data in CSV or JSON format
                 </p>
                 <div className="flex gap-3">
-                  <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm font-medium">
-                    Export as CSV
-                  </button>
-                  <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors text-sm font-medium">
-                    Export as JSON
-                  </button>
+                  <ExportButton expenses={expenses} variant="csv" />
+                  <ExportButton expenses={expenses} variant="json" />
                 </div>
               </div>
               
@@ -115,7 +115,20 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                   Permanently delete all your expenses and data
                 </p>
-                <button className="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium">
+                <button
+                  className="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors text-sm font-medium"
+                  onClick={async () => {
+                    if (!window.confirm('Are you sure you want to delete all your data? This action cannot be undone.')) return;
+                    try {
+                      const res = await authFetch('/api/expenses/deleteAll', { method: 'POST' });
+                      if (!res.ok) throw new Error('Failed to delete data');
+                      alert('All your data has been deleted.');
+                      window.location.reload();
+                    } catch (err) {
+                      alert('Error: ' + err.message);
+                    }
+                  }}
+                >
                   Delete All Data
                 </button>
               </div>
