@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 export default function DateFilterControls({
   filterDay,
   filterMonth,
@@ -60,3 +62,11 @@ export default function DateFilterControls({
     </div>
   );
 }
+
+DateFilterControls.propTypes = {
+  filterDay: PropTypes.string.isRequired,
+  filterMonth: PropTypes.string.isRequired,
+  filterYear: PropTypes.string.isRequired,
+  setFilterDate: PropTypes.func.isRequired,
+  monthNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

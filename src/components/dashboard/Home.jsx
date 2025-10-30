@@ -1,22 +1,20 @@
 "use client"
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AddExpense from "./AddExpense";
 import BudgetProgress from "./BudgetProgress";
-import { usePathname } from 'next/navigation';
 import RecentExpenses from "../expenses/RecentExpenses";
 
 
 export default function Home() {
-  const [useDark, setDark] = useState(false);
-
+  const [useDark, setDark] = useState(() => {
+    // Initialize from localStorage during initial render
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('useDark') === 'true';
+    }
+    return false;
+  });
+  const [refreshKey, setRefreshKey] = useState(0);
   useEffect(() => {
-    // Check for saved preference in localStorage
-    const isDark = localStorage.getItem('useDark') === 'true';
-    setDark(isDark);
-  }, []);
-  //#region use Effect
-  useEffect(() => {
-    // Apply the theme class to the <html> element and save preference
     if (useDark) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('useDark', 'true');
@@ -36,16 +34,16 @@ export default function Home() {
           <h1 className="text-3xl font-bold text-black dark:text-white">Dashboard</h1>
         </div>
         <section className="mb-10">
-          <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Add Expense</h2>
+          <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Budget Progress</h2>
           <BudgetProgress />
         </section>
         <section className="mb-10">
           <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Add Expense</h2>
-          <AddExpense />
+          <AddExpense onSuccess={() => setRefreshKey(prev => prev + 1)} />
         </section>
         <section className="">
           <h2 className="text-2xl text-black font-semibold mb-4 dark:text-white">Recent Expenses</h2>
-          <RecentExpenses />
+          <RecentExpenses key={refreshKey} />
         </section>
       </main>
     </div>

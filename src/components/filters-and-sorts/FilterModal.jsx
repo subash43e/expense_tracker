@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import PropTypes from "prop-types";
 import DateFilterControls from "./DateFilterControls";
 
 const MONTH_NAMES = [
@@ -74,3 +75,18 @@ export default function FilterModal({
     </div>
   );
 }
+
+FilterModal.propTypes = {
+  showFilterModal: PropTypes.bool.isRequired,
+  setShowFilterModal: PropTypes.func.isRequired,
+  filterDate: PropTypes.shape({
+    filterDay: PropTypes.string,
+    filterMonth: PropTypes.string,
+    filterYear: PropTypes.string,
+  }).isRequired,
+  setFilterDate: PropTypes.func.isRequired,
+  filterModalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]),
+};

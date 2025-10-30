@@ -1,11 +1,33 @@
 
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/expense-tracker";
+// Validate environment variables
+function validateEnvVariables() {
+  const requiredVars = {
+    MONGODB_URI: process.env.MONGODB_URI,
+  };
 
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+  const missing = [];
+  
+  for (const [key, value] of Object.entries(requiredVars)) {
+    if (!value) {
+      missing.push(key);
+    }
+  }
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required environment variables: ${missing.join(", ")}. ` +
+      `Please check your .env.local file and ensure all required variables are set. ` +
+      `Refer to .env.example for the list of required variables.`
+    );
+  }
 }
+
+// Run validation
+validateEnvVariables();
+
+const MONGODB_URI = process.env.MONGODB_URI;
 
 let cached = global.mongoose;
 

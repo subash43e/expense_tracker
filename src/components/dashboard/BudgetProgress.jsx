@@ -18,7 +18,21 @@ export default function BudgetProgress() {
     const fetchExpenses = async () => {
       const res = await fetch("/api/expenses");
       const data = await res.json();
-      const expenses = data.data;
+      
+      // Handle both response formats: paginated (data.expenses) and simple (data.data)
+      let expenses = [];
+      if (data.expenses && Array.isArray(data.expenses)) {
+        expenses = data.expenses;
+      } else if (data.data && Array.isArray(data.data)) {
+        expenses = data.data;
+      }
+
+      if (expenses.length === 0) {
+        console.warn("No expenses found or invalid data format.");
+        setCurrentSpending(0);
+        setYearlySpending(0);
+        return;
+      }
 
       const now = new Date();
       const currentMonth = now.getMonth();

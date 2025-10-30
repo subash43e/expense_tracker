@@ -23,6 +23,11 @@ const expenseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Add indexes for frequently queried fields to improve performance
+expenseSchema.index({ date: -1 }); // For sorting by date (most common query)
+expenseSchema.index({ category: 1 }); // For filtering by category
+expenseSchema.index({ date: -1, category: 1 }); // Compound index for date + category queries
+
 const Expense = mongoose.models.Expense || mongoose.model("Expense", expenseSchema);
 
 export default Expense;

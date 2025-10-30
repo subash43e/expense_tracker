@@ -1,13 +1,16 @@
 "use client";
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useRouter } from "next/navigation";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 
-export default function AddExpense({ onSuccess }) {
-  const [description, setDescription] = useState("");
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today
+export default function EditExpense({ expense }) {
+  const router = useRouter();
+  const [description, setDescription] = useState(expense.description || "");
+  const [amount, setAmount] = useState(expense.amount || "");
+  const [category, setCategory] = useState(expense.category || "");
+  const [date, setDate] = useState(
+    expense.date ? new Date(expense.date).toISOString().split("T")[0] : ""
+  );
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -60,58 +63,57 @@ export default function AddExpense({ onSuccess }) {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/expenses", {
-        method: "POST",
+      const res = await fetch(`/api/expenses/${expense._id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          description: description.trim(), 
-          amount: parseFloat(amount), 
+        body: JSON.stringify({
+          description: description.trim(),
+          amount: parseFloat(amount),
           category: category.trim(),
-          date: new Date(date)
+          date: new Date(date),
         }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        setMessage({ type: "success", text: "Expense added successfully!" });
-        setDescription("");
-        setAmount("");
-        setCategory("");
-        setDate(new Date().toISOString().split("T")[0]); // Reset to today
-        setErrors({});
-        
-        // Call success callback to refresh expense list
-        if (onSuccess) {
-          onSuccess();
-        }
+        setMessage({ type: "success", text: "Expense updated successfully!" });
+        // Redirect to expenses page after 1.5 seconds
+        setTimeout(() => {
+          router.push("/expenses");
+        }, 1500);
       } else {
         setMessage({ type: "error", text: data.error || "Something went wrong!" });
       }
     } catch (error) {
-      setMessage({ type: "error", text: "Failed to add expense. Please try again." });
+      setMessage({ type: "error", text: "Failed to update expense. Please try again." });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleCancel = () => {
+    router.push("/expenses");
+  };
+
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300 max-w-2xl">
       {message && (
         <div
-          className={`p-4 mb-4 text-sm rounded-lg ${message.type === "success"
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
-            }`}
+          className={`p-4 mb-4 text-sm rounded-lg ${
+            message.type === "success"
+              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200"
+              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-200"
+          }`}
         >
           {message.text}
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 gap-4">
+          <div>
             <label
               className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
               htmlFor="description"
@@ -120,10 +122,10 @@ export default function AddExpense({ onSuccess }) {
             </label>
             <input
               className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
-                errors.description 
-                  ? "border-red-500 dark:border-red-400" 
+                errors.description
+                  ? "border-red-500 dark:border-red-400"
                   : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 h-8 text-black dark:text-white placeholder:pl-2 pl-2`}
+              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 p-2 text-black dark:text-white`}
               id="description"
               name="description"
               placeholder="e.g. Coffee with friends"
@@ -133,22 +135,25 @@ export default function AddExpense({ onSuccess }) {
               required
             />
             {errors.description && (
-              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.description}</p>
+              <p className="text-red-600 dark:text-red-400 text-xs mt-1">
+                {errors.description}
+              </p>
             )}
           </div>
-          <div className="">
+
+          <div>
             <label
-              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1 "
+              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
               htmlFor="amount"
             >
               Amount
             </label>
             <input
               className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
-                errors.amount 
-                  ? "border-red-500 dark:border-red-400" 
+                errors.amount
+                  ? "border-red-500 dark:border-red-400"
                   : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white placeholder:pl-2 pl-2 h-8`}
+              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 p-2 text-black dark:text-white`}
               id="amount"
               name="amount"
               placeholder="$0.00"
@@ -163,7 +168,8 @@ export default function AddExpense({ onSuccess }) {
               <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.amount}</p>
             )}
           </div>
-          <div className="">
+
+          <div>
             <label
               className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
               htmlFor="category"
@@ -172,10 +178,10 @@ export default function AddExpense({ onSuccess }) {
             </label>
             <select
               className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
-                errors.category 
-                  ? "border-red-500 dark:border-red-400" 
+                errors.category
+                  ? "border-red-500 dark:border-red-400"
                   : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white pl-2 h-8`}
+              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 p-2 text-black dark:text-white`}
               id="category"
               name="category"
               value={category}
@@ -193,7 +199,8 @@ export default function AddExpense({ onSuccess }) {
               <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.category}</p>
             )}
           </div>
-          <div className="">
+
+          <div>
             <label
               className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
               htmlFor="date"
@@ -202,10 +209,10 @@ export default function AddExpense({ onSuccess }) {
             </label>
             <input
               className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
-                errors.date 
-                  ? "border-red-500 dark:border-red-400" 
+                errors.date
+                  ? "border-red-500 dark:border-red-400"
                   : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white pl-2 h-8`}
+              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 p-2 text-black dark:text-white`}
               id="date"
               name="date"
               type="date"
@@ -218,11 +225,20 @@ export default function AddExpense({ onSuccess }) {
             )}
           </div>
         </div>
-        <div className="flex justify-end mt-6">
+
+        <div className="flex gap-3 justify-end mt-6">
           <button
-            className={`border px-6 py-2 rounded-lg shadow transition w-full md:w-auto flex items-center justify-center gap-2 ${
-              isLoading 
-                ? "bg-[#6366F1]/50 text-[#F9FAFB] cursor-not-allowed" 
+            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-6 py-2 rounded-lg shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+            type="button"
+            onClick={handleCancel}
+            disabled={isLoading}
+          >
+            Cancel
+          </button>
+          <button
+            className={`border px-6 py-2 rounded-lg shadow transition flex items-center justify-center gap-2 ${
+              isLoading
+                ? "bg-[#6366F1]/50 text-[#F9FAFB] cursor-not-allowed"
                 : "bg-[#6366F1] text-[#F9FAFB] hover:bg-[#6366F1]/90"
             }`}
             type="submit"
@@ -230,14 +246,30 @@ export default function AddExpense({ onSuccess }) {
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
-                Adding...
+                Updating...
               </>
             ) : (
-              "Add Expense"
+              "Update Expense"
             )}
           </button>
         </div>
@@ -245,7 +277,3 @@ export default function AddExpense({ onSuccess }) {
     </div>
   );
 }
-
-AddExpense.propTypes = {
-  onSuccess: PropTypes.func,
-};

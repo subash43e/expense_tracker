@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function SortControls({
   showSortModal,
@@ -93,3 +94,16 @@ export default function SortControls({
     </>
   );
 }
+
+SortControls.propTypes = {
+  showSortModal: PropTypes.bool.isRequired,
+  setShowSortModal: PropTypes.func.isRequired,
+  sortBy: PropTypes.string.isRequired,
+  setSortBy: PropTypes.func.isRequired,
+  sortOrder: PropTypes.string.isRequired,
+  setSortOrder: PropTypes.func.isRequired,
+  sortModalRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+  ]),
+};

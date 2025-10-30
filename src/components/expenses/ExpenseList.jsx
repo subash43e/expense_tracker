@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import PropTypes from "prop-types";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
 
@@ -24,6 +25,7 @@ export default function ExpenseList({
               <p className="font-medium text-black dark:text-gray-50">
                 {expense.description}
               </p>
+              <p></p>
               <p className="text-sm text-black dark:text-gray-400">
                 ${expense.amount}
               </p>
@@ -64,3 +66,17 @@ export default function ExpenseList({
     </>
   );
 }
+
+ExpenseList.propTypes = {
+  expensesToDisplay: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+      category: PropTypes.string.isRequired,
+      date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
+    })
+  ).isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  pathname: PropTypes.string,
+};
