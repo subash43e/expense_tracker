@@ -1,14 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
-
-
 
 export default function BudgetProgress() {
   const [currentSpending, setCurrentSpending] = useState(0);
   const [yearlySpending, setYearlySpending] = useState(0);
-
-  const monthlyBudget = 5000;
+  const [monthlyBudget, setMonthlyBudget] = useState(5000);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationType, setNotificationType] = useState("warning"); // warning, danger, success
 
   const calculatePercentageSpent = (monthlyBudget, currentSpending) => {
     return (currentSpending / monthlyBudget) * 100;
@@ -53,17 +53,107 @@ export default function BudgetProgress() {
 
       const totalYearlySpent = yearlyExpenses.reduce((sum, expense) => sum + expense.amount, 0);
       setYearlySpending(totalYearlySpent);
+
+      // Check budget thresholds and show notifications
+      const percentage = (totalMonthlySpent / monthlyBudget) * 100;
+      if (totalMonthlySpent > monthlyBudget) {
+        setNotificationType("danger");
+        setShowNotification(true);
+      } else if (percentage >= 80) {
+        setNotificationType("warning");
+        setShowNotification(true);
+      } else if (percentage >= 50) {
+        setNotificationType("info");
+        setShowNotification(false); // Don't show notification at 50%
+      } else {
+        setNotificationType("success");
+        setShowNotification(false);
+      }
     };
 
     fetchExpenses();
-  }, []);
+  }, [monthlyBudget]);
 
   const percentageSpent = calculatePercentageSpent(monthlyBudget, currentSpending);
   const isOverBudget = currentSpending > monthlyBudget;
+  const isNearBudget = percentageSpent >= 80 && percentageSpent < 100;
+
+  const getNotificationMessage = () => {
+    if (isOverBudget) {
+      return `You've exceeded your budget by $${(currentSpending - monthlyBudget).toFixed(2)}!`;
+    } else if (isNearBudget) {
+      return `You're approaching your budget limit! $${(monthlyBudget - currentSpending).toFixed(2)} remaining.`;
+    }
+    return "";
+  };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
-      <div className="flex items-center mb-4 justify-center">
+    <div className="space-y-4">
+      {/* Budget Alert Notification */}
+      {showNotification && (
+        <div
+          className={`p-4 rounded-lg border-l-4 ${
+            notificationType === "danger"
+              ? "bg-red-50 dark:bg-red-900/20 border-red-500"
+              : "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500"
+          }`}
+          role="alert"
+          aria-live="polite"
+        >
+          <div className="flex items-center">
+            <svg
+              className={`w-6 h-6 mr-3 ${
+                notificationType === "danger" ? "text-red-500" : "text-yellow-500"
+              }`}
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            <div>
+              <h3
+                className={`font-semibold ${
+                  notificationType === "danger"
+                    ? "text-red-800 dark:text-red-200"
+                    : "text-yellow-800 dark:text-yellow-200"
+                }`}
+              >
+                {notificationType === "danger" ? "Budget Exceeded!" : "Budget Warning"}
+              </h3>
+              <p
+                className={`text-sm ${
+                  notificationType === "danger"
+                    ? "text-red-700 dark:text-red-300"
+                    : "text-yellow-700 dark:text-yellow-300"
+                }`}
+              >
+                {getNotificationMessage()}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowNotification(false)}
+              className="ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              aria-label="Dismiss notification"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Budget Progress Card */}
+      <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+        <div className="flex items-center mb-4 justify-center">
         <div className="flex items-center mb-4 mx-auto">
           <div className="mr-3">
             {/* Star Icon */}
@@ -107,11 +197,12 @@ export default function BudgetProgress() {
         <div className="absolute top-5 -right-1 mt-1 text-sm text-gray-600 dark:text-white">100%</div>
       </div>
 
-      <div className="space-x-2 hidden">
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 gap-2">
-          <BsTrophy />
-          Budget Master
-        </span>
+        <div className="space-x-2 hidden">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800 gap-2">
+            <BsTrophy />
+            Budget Master
+          </span>
+        </div>
       </div>
     </div>
   );
