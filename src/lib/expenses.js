@@ -1,9 +1,19 @@
 import dbConnect from "@/lib/db";
 import Expense from "@/models/Expense";
 
+/**
+ * Fetch all expenses with pagination, sorting, and filtering options.
+ * @param {Object} options - Query options.
+ * @param {number} [options.page=1] - Page number for pagination.
+ * @param {number} [options.limit=100] - Number of items per page.
+ * @param {string} [options.sortBy="date"] - Field to sort by.
+ * @param {string} [options.sortOrder="desc"] - Sort order ("asc" or "desc").
+ * @param {string|null} [options.category=null] - Filter by category.
+ * @returns {Promise<Object>} - Paginated expenses and metadata.
+ */
 export async function getAllExpenses(options = {}) {
   await dbConnect();
-  
+
   const {
     page = 1,
     limit = 100,
@@ -12,25 +22,14 @@ export async function getAllExpenses(options = {}) {
     category = null,
   } = options;
 
-  // Build query
-  const query = {};
-  if (category) {
-    query.category = category;
-  }
-
-  // Calculate pagination
+  const query = category ? { category } : {};
   const skip = (page - 1) * limit;
   const sort = { [sortBy]: sortOrder === "desc" ? -1 : 1 };
 
-  // Execute query with pagination
-  const expenses = await Expense.find(query)
-    .sort(sort)
-    .limit(limit)
-    .skip(skip)
-    .lean(); // Use lean() for better performance when you don't need Mongoose documents
-
-  // Get total count for pagination metadata
-  const total = await Expense.countDocuments(query);
+  const [expenses, total] = await Promise.all([
+    Expense.find(query).sort(sort).limit(limit).skip(skip).lean(),
+    Expense.countDocuments(query),
+  ]);
 
   return {
     expenses,
@@ -44,7 +43,10 @@ export async function getAllExpenses(options = {}) {
   };
 }
 
-// Keep simple version for backward compatibility
+/**
+ * Fetch all expenses without pagination.
+ * @returns {Promise<Array>} - List of all expenses.
+ */
 export async function getAllExpensesSimple() {
   await dbConnect();
   return Expense.find({}).sort({ date: -1 }).lean();

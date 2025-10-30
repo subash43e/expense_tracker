@@ -24,9 +24,9 @@ export default function ExpensesPageClient({ initialExpenses }) {
   }, []);
 
   return (
-    <div className="bg-slate-100 dark:bg-slate-900 p-4">
+    <div className="bg-gray-50 dark:bg-gray-900 p-4 min-h-screen">
       <div className="flex justify-between items-center mb-5">
-        <h1 className="text-3xl font-bold text-black dark:text-white">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           All Expenses
         </h1>
         <div className="flex gap-3">

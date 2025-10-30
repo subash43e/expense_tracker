@@ -1,4 +1,4 @@
-import EditExpense from "@/components/expenses/EditExpense";
+import EditExpenseModal from "@/components/expenses/EditExpenseModal";
 import { getExpenseById } from "@/lib/expenses";
 import { notFound } from "next/navigation";
 
@@ -18,11 +18,8 @@ export default async function EditExpensePage({ params }) {
   }
 
   return (
-    <div className="bg-slate-100 dark:bg-slate-900 p-4 min-h-screen">
-      <h1 className="text-3xl font-bold text-black dark:text-white pb-5">
-        Edit Expense
-      </h1>
-      <EditExpense expense={expense} />
+    <div className="bg-gray-50 dark:bg-gray-900 p-4 min-h-screen">
+      <EditExpenseModal expense={expense} />
     </div>
   );
 }

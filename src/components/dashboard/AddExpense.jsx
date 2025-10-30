@@ -98,12 +98,12 @@ export default function AddExpense({ onSuccess }) {
   };
 
   return (
-    <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
       {message && (
         <div
-          className={`p-4 mb-4 text-sm rounded-lg ${message.type === "success"
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
+          className={`p-4 mb-4 text-sm rounded-lg border ${message.type === "success"
+            ? "bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800"
+            : "bg-red-50 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800"
             }`}
         >
           {message.text}
@@ -113,17 +113,17 @@ export default function AddExpense({ onSuccess }) {
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
           <div className="md:col-span-2">
             <label
-              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               htmlFor="description"
             >
               Description
             </label>
             <input
-              className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
+              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
                 errors.description 
                   ? "border-red-500 dark:border-red-400" 
-                  : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 h-8 text-black dark:text-white placeholder:pl-2 pl-2`}
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3`}
               id="description"
               name="description"
               placeholder="e.g. Coffee with friends"
@@ -138,17 +138,17 @@ export default function AddExpense({ onSuccess }) {
           </div>
           <div className="">
             <label
-              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1 "
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               htmlFor="amount"
             >
               Amount
             </label>
             <input
-              className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
+              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
                 errors.amount 
                   ? "border-red-500 dark:border-red-400" 
-                  : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white placeholder:pl-2 pl-2 h-8`}
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 h-10`}
               id="amount"
               name="amount"
               placeholder="$0.00"
@@ -165,17 +165,17 @@ export default function AddExpense({ onSuccess }) {
           </div>
           <div className="">
             <label
-              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               htmlFor="category"
             >
               Category
             </label>
             <select
-              className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
+              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
                 errors.category 
                   ? "border-red-500 dark:border-red-400" 
-                  : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white pl-2 h-8`}
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 px-3 h-10`}
               id="category"
               name="category"
               value={category}
@@ -195,17 +195,17 @@ export default function AddExpense({ onSuccess }) {
           </div>
           <div className="">
             <label
-              className="block text-sm font-medium text-[#6B7280] dark:text-[#9CA3AF] mb-1"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               htmlFor="date"
             >
               Date
             </label>
             <input
-              className={`w-full bg-[#F3F4F6] dark:bg-[#111827] border ${
+              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
                 errors.date 
                   ? "border-red-500 dark:border-red-400" 
-                  : "border-[#6B7280]/30 dark:border-[#9CA3AF]/30"
-              } rounded-md focus:ring-#6366F1 focus:border-#6366F1 text-black dark:text-white pl-2 h-8`}
+                  : "border-gray-300 dark:border-gray-600"
+              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 px-3 h-10`}
               id="date"
               name="date"
               type="date"
@@ -220,10 +220,10 @@ export default function AddExpense({ onSuccess }) {
         </div>
         <div className="flex justify-end mt-6">
           <button
-            className={`border px-6 py-2 rounded-lg shadow transition w-full md:w-auto flex items-center justify-center gap-2 ${
+            className={`px-6 py-2.5 rounded-lg shadow-md transition-all w-full md:w-auto flex items-center justify-center gap-2 font-semibold ${
               isLoading 
-                ? "bg-[#6366F1]/50 text-[#F9FAFB] cursor-not-allowed" 
-                : "bg-[#6366F1] text-[#F9FAFB] hover:bg-[#6366F1]/90"
+                ? "bg-indigo-400 text-white cursor-not-allowed" 
+                : "bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-lg transform hover:scale-105"
             }`}
             type="submit"
             disabled={isLoading}
@@ -237,7 +237,12 @@ export default function AddExpense({ onSuccess }) {
                 Adding...
               </>
             ) : (
-              "Add Expense"
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Expense
+              </>
             )}
           </button>
         </div>
