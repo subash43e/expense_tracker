@@ -87,6 +87,6 @@ FilterModal.propTypes = {
   setFilterDate: PropTypes.func.isRequired,
   filterModalRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.any })
   ]),
 };

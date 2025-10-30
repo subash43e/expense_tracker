@@ -104,6 +104,6 @@ SortControls.propTypes = {
   setSortOrder: PropTypes.func.isRequired,
   sortModalRef: PropTypes.oneOfType([
     PropTypes.func,
-    PropTypes.shape({ current: PropTypes.instanceOf(Element) })
+    PropTypes.shape({ current: PropTypes.any })
   ]),
 };
