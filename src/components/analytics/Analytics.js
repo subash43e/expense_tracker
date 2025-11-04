@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import PropTypes from "prop-types";
 import ExportButton from "../export/ExportButton";
 import { authFetch } from "@/lib/authFetch";
 import {

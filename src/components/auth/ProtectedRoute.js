@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import PropTypes from 'prop-types';
 import { useAuth } from '@/hooks/useAuth';
 
 export function ProtectedRoute({ children }) {
@@ -31,3 +32,7 @@ export function ProtectedRoute({ children }) {
 
   return <>{children}</>;
 }
+
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+};

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
+import { validateExpenseForm, hasValidationErrors } from "@/lib/validation/expenseValidation";
 
 export default function AddExpense({ onSuccess }) {
   const [description, setDescription] = useState("");
@@ -20,47 +21,16 @@ export default function AddExpense({ onSuccess }) {
     }
   }, [message]);
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    // Validate description
-    if (!description.trim()) {
-      newErrors.description = "Description is required";
-    } else if (description.trim().length < 3) {
-      newErrors.description = "Description must be at least 3 characters";
-    }
-
-    // Validate amount
-    if (!amount) {
-      newErrors.amount = "Amount is required";
-    } else if (isNaN(amount) || parseFloat(amount) <= 0) {
-      newErrors.amount = "Amount must be a positive number";
-    } else if (parseFloat(amount) > 1000000) {
-      newErrors.amount = "Amount cannot exceed $1,000,000";
-    }
-
-    // Validate category
-    if (!category.trim()) {
-      newErrors.category = "Category is required";
-    } else if (category.trim().length < 2) {
-      newErrors.category = "Category must be at least 2 characters";
-    }
-
-    // Validate date
-    if (!date) {
-      newErrors.date = "Date is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
+  // React Compiler automatically memoizes this function - no manual useCallback needed
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
 
-    // Validate form before submission
-    if (!validateForm()) {
+    // Validate form before submission using extracted validation utility
+    const validationErrors = validateExpenseForm({ description, amount, category, date });
+    setErrors(validationErrors);
+
+    if (hasValidationErrors(validationErrors)) {
       setMessage({ type: "error", text: "Please fix the errors below" });
       return;
     }

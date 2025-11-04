@@ -11,10 +11,6 @@ export default function BudgetProgress() {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationType, setNotificationType] = useState("warning"); // warning, danger, success
 
-  const calculatePercentageSpent = (monthlyBudget, currentSpending) => {
-    return (currentSpending / monthlyBudget) * 100;
-  };
-
   useEffect(() => {
     const fetchExpenses = async () => {
       const res = await authFetch("/api/expenses");
@@ -75,10 +71,12 @@ export default function BudgetProgress() {
     fetchExpenses();
   }, [monthlyBudget]);
 
-  const percentageSpent = calculatePercentageSpent(monthlyBudget, currentSpending);
+  // React Compiler automatically memoizes these calculations - no manual useMemo needed
+  const percentageSpent = (currentSpending / monthlyBudget) * 100;
   const isOverBudget = currentSpending > monthlyBudget;
   const isNearBudget = percentageSpent >= 80 && percentageSpent < 100;
 
+  // React Compiler automatically memoizes this function - no manual useMemo needed
   const getNotificationMessage = () => {
     if (isOverBudget) {
       return `You've exceeded your budget by $${(currentSpending - monthlyBudget).toFixed(2)}!`;
@@ -86,6 +84,11 @@ export default function BudgetProgress() {
       return `You're approaching your budget limit! $${(monthlyBudget - currentSpending).toFixed(2)} remaining.`;
     }
     return "";
+  };
+
+  // React Compiler automatically memoizes this function - no manual useCallback needed
+  const handleDismissNotification = () => {
+    setShowNotification(false);
   };
 
   return (
@@ -136,7 +139,7 @@ export default function BudgetProgress() {
               </p>
             </div>
             <button
-              onClick={() => setShowNotification(false)}
+              onClick={handleDismissNotification}
               className="ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               aria-label="Dismiss notification"
             >

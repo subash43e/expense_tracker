@@ -77,6 +77,6 @@ ExpenseList.propTypes = {
       date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]),
     })
   ).isRequired,
-  handleDelete: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
   pathname: PropTypes.string,
 };
