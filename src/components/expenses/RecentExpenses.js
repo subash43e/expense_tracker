@@ -52,7 +52,8 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
   useEffect(() => {
     // Always fetch expenses on mount to ensure fresh data
     fetchExpenses();
-  }, [fetchExpenses]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // fetchExpenses is now stable via useCallback
 
   // Close modal on ESC key press - ACCESSIBILITY WIN!
   useEffect(() => {

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/components/dashboard/Home";

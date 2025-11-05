@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,15 +17,6 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Note: Email index is automatically created by unique: true constraint above
-
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('passwordHash')) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.passwordHash = await bcrypt.hash(this.passwordHash, salt);
-  next();
-});
 
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 export default User;
