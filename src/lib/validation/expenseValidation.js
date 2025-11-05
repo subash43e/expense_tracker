@@ -1,17 +1,4 @@
-/**
- * Validation utilities for expense-related forms
- * Following SOP (Separation of Concerns) and DRY principles
- */
 
-/**
- * Validates expense form fields
- * @param {Object} formData - The form data to validate
- * @param {string} formData.description - Expense description
- * @param {string|number} formData.amount - Expense amount
- * @param {string} formData.category - Expense category
- * @param {string} formData.date - Expense date
- * @returns {Object} errors - Object containing validation errors (empty if valid)
- */
 export function validateExpenseForm({ description, amount, category, date }) {
   const errors = {};
 
@@ -46,11 +33,7 @@ export function validateExpenseForm({ description, amount, category, date }) {
   return errors;
 }
 
-/**
- * Checks if validation errors object has any errors
- * @param {Object} errors - Validation errors object
- * @returns {boolean} - True if there are errors, false otherwise
- */
+
 export function hasValidationErrors(errors) {
   return Object.keys(errors).length > 0;
 }

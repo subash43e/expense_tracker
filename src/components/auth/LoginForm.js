@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { AiOutlineCheckCircle, AiOutlineCloseCircle, AiOutlineLoading3Quarters } from 'react-icons/ai';
-import { useAuth } from '@/hooks/useAuth';
-import { validateLogin, validateEmail } from '@/lib/validation/authValidation';
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  AiOutlineCheckCircle,
+  AiOutlineCloseCircle,
+  AiOutlineLoading3Quarters,
+} from "react-icons/ai";
+import { useAuth } from "@/hooks/useAuth";
+import { validateLogin, validateEmail } from "@/lib/validation/authValidation";
 
 export default function LoginForm() {
   const router = useRouter();
   const { login, isAuthenticated, loading: authLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -20,30 +24,33 @@ export default function LoginForm() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      router.push('/');
+      router.push("/");
     }
   }, [isAuthenticated, authLoading, router]);
 
   const validateField = (field, value) => {
-    if (field === 'email') {
+    if (field === "email") {
       const validation = validateEmail(value);
       return validation.error;
     }
-    if (field === 'password') {
-      return !value ? 'Password is required' : null;
+    if (field === "password") {
+      return !value ? "Password is required" : null;
     }
     return null;
   };
 
   const handleBlur = (field) => {
     setTouched((prev) => ({ ...prev, [field]: true }));
-    const fieldError = validateField(field, field === 'email' ? email : password);
+    const fieldError = validateField(
+      field,
+      field === "email" ? email : password
+    );
     setFieldErrors((prev) => ({ ...prev, [field]: fieldError }));
   };
 
   const handleChange = (field, value) => {
-    if (field === 'email') setEmail(value);
-    if (field === 'password') setPassword(value);
+    if (field === "email") setEmail(value);
+    if (field === "password") setPassword(value);
 
     if (touched[field]) {
       const fieldError = validateField(field, value);
@@ -65,15 +72,16 @@ export default function LoginForm() {
     setLoading(true);
     try {
       await login(email, password);
-      router.push('/');
+      router.push("/");
     } catch (err) {
-      setError(err.message || 'Login failed. Please try again.');
+      setError(err.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const isFormValid = !fieldErrors.email && !fieldErrors.password && email && password;
+  const isFormValid =
+    !fieldErrors.email && !fieldErrors.password && email && password;
 
   // Show loading while checking authentication
   if (authLoading) {
@@ -109,7 +117,10 @@ export default function LoginForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email Field */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -117,14 +128,14 @@ export default function LoginForm() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                onBlur={() => handleBlur('email')}
+                onChange={(e) => handleChange("email", e.target.value)}
+                onBlur={() => handleBlur("email")}
                 className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                   fieldErrors.email
-                    ? 'border-red-300 dark:border-red-600 focus:ring-red-500 dark:focus:ring-red-400'
+                    ? "border-red-300 dark:border-red-600 focus:ring-red-500 dark:focus:ring-red-400"
                     : touched.email && !fieldErrors.email
-                      ? 'border-green-300 dark:border-green-600 focus:ring-green-500 dark:focus:ring-green-400'
-                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-400'
+                    ? "border-green-300 dark:border-green-600 focus:ring-green-500 dark:focus:ring-green-400"
+                    : "border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-400"
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                 placeholder="you@example.com"
               />
@@ -139,13 +150,18 @@ export default function LoginForm() {
               )}
             </div>
             {fieldErrors.email && touched.email && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{fieldErrors.email}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
+                {fieldErrors.email}
+              </p>
             )}
           </div>
 
           {/* Password Field */}
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -153,14 +169,14 @@ export default function LoginForm() {
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => handleChange('password', e.target.value)}
-                onBlur={() => handleBlur('password')}
+                onChange={(e) => handleChange("password", e.target.value)}
+                onBlur={() => handleBlur("password")}
                 className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                   fieldErrors.password
-                    ? 'border-red-300 dark:border-red-600 focus:ring-red-500 dark:focus:ring-red-400'
+                    ? "border-red-300 dark:border-red-600 focus:ring-red-500 dark:focus:ring-red-400"
                     : touched.password && !fieldErrors.password
-                      ? 'border-green-300 dark:border-green-600 focus:ring-green-500 dark:focus:ring-green-400'
-                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-400'
+                    ? "border-green-300 dark:border-green-600 focus:ring-green-500 dark:focus:ring-green-400"
+                    : "border-gray-300 dark:border-gray-600 focus:ring-blue-500 dark:focus:ring-blue-400"
                 } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                 placeholder="••••••••"
               />
@@ -175,7 +191,9 @@ export default function LoginForm() {
               )}
             </div>
             {fieldErrors.password && touched.password && (
-              <p className="text-red-500 dark:text-red-400 text-sm mt-1">{fieldErrors.password}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm mt-1">
+                {fieldErrors.password}
+              </p>
             )}
           </div>
 
@@ -186,15 +204,27 @@ export default function LoginForm() {
             className="w-full bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600 disabled:bg-gray-400 dark:disabled:bg-gray-600 text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {loading && <AiOutlineLoading3Quarters className="animate-spin" />}
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         {/* Register Link */}
         <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
-          Don&apos;t have an account?{' '}
-          <Link href="/register" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/register"
+            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
+          >
             Register here
+          </Link>
+        </p>
+        <p className="text-center text-gray-600 dark:text-gray-400 mb-4">
+          If you wan&apos;t to go{" "}
+          <Link
+            href="/"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            Home
           </Link>
         </p>
       </div>

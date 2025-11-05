@@ -217,7 +217,7 @@ export default function BudgetProgress() {
         </div>
 
         <div className="w-full  relative ">
-          <div className="overflow-hidden rounded-full h-4 mb-10">
+          <div className="overflow-hidden rounded-full h-4 mb-10 border">
             <div
               className={`${
                 isOverBudget ? "bg-red-500" : "bg-green-500"
@@ -233,6 +233,9 @@ export default function BudgetProgress() {
           <div className="absolute top-5 -right-1 mt-1 text-sm text-gray-600 dark:text-white">
             100%
           </div>
+        </div>
+        <div className="text-sm text-gray-600 dark:text-gray-300 mt-2">
+          Note: It&apos;s just showing the current month&apos;s total expense.
         </div>
 
         <div className="space-x-2 hidden">

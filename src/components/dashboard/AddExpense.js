@@ -9,19 +9,18 @@ export default function AddExpense({ onSuccess }) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]); // Default to today
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (message?.type === "success") {
-      const timer = setTimeout(() => setMessage(null), 5000); // Auto-hide after 5 seconds
+      const timer = setTimeout(() => setMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
 
-  // React Compiler automatically memoizes this function - no manual useCallback needed
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
