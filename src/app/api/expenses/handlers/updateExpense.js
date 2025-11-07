@@ -1,56 +1,25 @@
-import { modifyExpense } from "@/lib/handlers/expenseHandlers";
-import { objectIdSchema, updateExpenseSchema } from "@/lib/validations";
-import { requireAuth } from "@/lib/auth";
-import { ZodError } from "zod";
 import { NextResponse } from "next/server";
-
-// Import your preferred logging library
-// import logger from "@/lib/logger";
+import { modifyExpense } from "@/lib/handlers/expenseHandlers";
+import { updateExpenseSchema } from "@/lib/validations";
+import {
+  ApiError,
+  ensureAuthenticated,
+  handleApi,
+  resolveAndValidateObjectId,
+} from "@/lib/api/utils";
 
 export async function handleUpdateExpense(request, params) {
-  try {
-    // Check authentication
-    const { userId, error } = requireAuth(request);
-    if (error) {
-      return NextResponse.json(
-        { success: false, error: error.message },
-        { status: error.status }
-      );
-    }
-
-    const resolvedParams = await Promise.resolve(params);
-    const id = resolvedParams.id;
-
-    // Validate ObjectId format
-    objectIdSchema.parse(id);
+  return handleApi(async () => {
+    const userId = ensureAuthenticated(request);
+    const id = await resolveAndValidateObjectId(params);
 
     const body = await request.json();
-    
-    // Validate request body
     const validatedData = updateExpenseSchema.parse(body);
 
     const expense = await modifyExpense(id, userId, validatedData);
     if (!expense) {
-      return NextResponse.json(
-        { success: false, error: "Expense not found" },
-        { status: 404 }
-      );
+      throw new ApiError(404, "Expense not found");
     }
     return NextResponse.json({ success: true, data: expense });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { success: false, error: "Validation error", issues: error.errors },
-        { status: 400 }
-      );
-    }
-
-    // Structured logging instead of console.error
-    // logger.error("PUT /api/expenses/[id] error:", error);
-
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
-  }
+  }, { logMessage: "PUT /api/expenses/[id] error" });
 }
