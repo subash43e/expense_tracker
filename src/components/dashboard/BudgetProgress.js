@@ -5,7 +5,6 @@ import { BsTrophy } from "react-icons/bs";
 
 export default function BudgetProgress({ expenses = [], isLoading, error }) {
   const monthlyBudget = 5000;
-  const [showNotification, setShowNotification] = useState(false);
 
   const {
     currentSpending,
@@ -72,10 +71,6 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
     };
   }, [expenses, monthlyBudget]);
 
-  useEffect(() => {
-    setShowNotification(shouldShowNotification);
-  }, [shouldShowNotification, currentSpending]);
-
   const percentageSpent = (currentSpending / monthlyBudget) * 100;
   const isOverBudget = currentSpending > monthlyBudget;
   const isNearBudget = percentageSpent >= 80 && percentageSpent < 100;
@@ -93,8 +88,10 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
     return "";
   };
 
+  const [dismissedNotification, setDismissedNotification] = useState(false);
+
   const handleDismissNotification = () => {
-    setShowNotification(false);
+    setDismissedNotification(true);
   };
 
   if (isLoading) {
@@ -116,7 +113,7 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
   return (
     <div className="space-y-4">
       {/* Budget Alert Notification */}
-      {showNotification && (
+      {shouldShowNotification && !dismissedNotification && (
         <div
           className={`p-4 rounded-lg border-l-4 ${
             notificationType === "danger"

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import FocusTrap from "focus-trap-react";
 
 export default function DeleteConfirmModal({ 
   isOpen, 
@@ -42,18 +43,25 @@ export default function DeleteConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
+    <FocusTrap
+      focusTrapOptions={{
+        initialFocus: () => confirmButtonRef.current,
+        allowOutsideClick: true,
+        escapeDeactivates: true,
+      }}
     >
       <div 
-        ref={modalRef}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
       >
+        <div 
+          ref={modalRef}
+          className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Icon */}
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full">
           <svg 
@@ -117,7 +125,8 @@ export default function DeleteConfirmModal({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </FocusTrap>
   );
 }
 

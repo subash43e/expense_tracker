@@ -46,7 +46,10 @@ export default function RecentExpenses({
   const pathname = usePathname();
   const { toast } = useToast();
 
-  const expensesList = Array.isArray(expenses) ? expenses : [];
+  // Normalize expenses array with useMemo to stabilize reference
+  const expensesList = useMemo(() => {
+    return Array.isArray(expenses) ? expenses : [];
+  }, [expenses]);
 
   // Close modal on ESC key press - ACCESSIBILITY WIN!
   useEffect(() => {
