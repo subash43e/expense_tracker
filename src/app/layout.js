@@ -1,5 +1,4 @@
 import LayoutWrapper from '@/components/layout/LayoutWrapper';
-import ErrorBoundary from '@/components/ErrorBoundary';
 import { DarkModeProvider } from '@/components/layout/DarkModeProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { ToastProvider } from '@/components/common/Toast';
