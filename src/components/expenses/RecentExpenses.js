@@ -1,8 +1,7 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
-import useFetchExpenses from "@/hooks/useFetchExpenses";
 import useModalState from "@/hooks/useModalState";
 import ExpenseFilters from "./ExpenseFilters";
 import ExpenseList from "./ExpenseList";
@@ -13,15 +12,13 @@ import { authFetch } from "@/lib/authFetch";
 import { useToast } from "@/components/common/Toast";
 import styles from "@/styles/RecentExpenses.module.css";
 
-// Move constants OUTSIDE component - this prevents recreation on every render
-export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
-  const {
-    expenses,
-    setExpenses,
-    loading,
-    error,
-    fetchExpenses,
-  } = useFetchExpenses(initialExpenses);
+export default function RecentExpenses({
+  expenses = [],
+  setExpenses = () => {},
+  loading,
+  error,
+  onRefreshNeeded,
+}) {
 
   const {
     showFilterModal,
@@ -49,11 +46,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
   const pathname = usePathname();
   const { toast } = useToast();
 
-  useEffect(() => {
-    // Always fetch expenses on mount to ensure fresh data
-    fetchExpenses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // fetchExpenses is now stable via useCallback
+  const expensesList = Array.isArray(expenses) ? expenses : [];
 
   // Close modal on ESC key press - ACCESSIBILITY WIN!
   useEffect(() => {
@@ -90,7 +83,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
 
   // Open delete confirmation modal
   const handleDelete = (id) => {
-    const expense = expenses.find((exp) => exp._id === id);
+    const expense = expensesList.find((exp) => exp._id === id);
     setExpenseToDelete(expense);
     setDeleteModalOpen(true);
   };
@@ -100,13 +93,13 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
     if (!expenseToDelete) return;
 
     const id = expenseToDelete._id;
-    const previousExpenses = [...expenses];
+    const previousExpenses = expensesList.slice();
 
     try {
       setIsDeleting(true);
       
       // Optimistically update UI immediately
-      setExpenses(expenses.filter((expense) => expense._id !== id));
+      setExpenses((prev) => prev.filter((expense) => expense._id !== id));
       setDeleteModalOpen(false);
 
       // Ensure id is a string
@@ -117,6 +110,10 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
       
       if (!res.ok || !data.success) {
         throw new Error(data.error || "Failed to delete expense");
+      }
+
+      if (onRefreshNeeded) {
+        await onRefreshNeeded();
       }
     } catch (err) {
       // Rollback on error
@@ -136,7 +133,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
 
   // CRITICAL FIX: Wrap in useCallback to prevent unnecessary recalculations
   const getFilteredExpenses = useCallback(() => {
-    let filtered = expenses;
+  let filtered = expensesList;
 
     // Search filter - check description, category, and amount
     if (searchQuery.trim()) {
@@ -186,7 +183,7 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
     }
     return filtered;
   }, [
-    expenses,
+  expensesList,
     searchQuery,
     filterDate.filterYear,
     filterDate.filterMonth,
@@ -328,14 +325,20 @@ export default function RecentExpenses({ initialExpenses, onRefreshNeeded }) {
 }
 
 RecentExpenses.propTypes = {
-  initialExpenses: PropTypes.arrayOf(
+  expenses: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired,
       amount: PropTypes.number.isRequired,
       category: PropTypes.string.isRequired,
-      date: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
+      date: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
     })
   ),
+  setExpenses: PropTypes.func,
+  loading: PropTypes.bool,
+  error: PropTypes.string,
   onRefreshNeeded: PropTypes.func,
 };

@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { ensureCsrfToken, withCsrfHeader } from "@/lib/authFetch";
 
 export const AuthContext = createContext();
 
@@ -21,8 +22,11 @@ export function AuthProvider({ children }) {
         return;
       }
 
+      await ensureCsrfToken();
       const response = await fetch("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
+        method: "GET",
+        headers: withCsrfHeader({ Authorization: `Bearer ${token}` }),
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -41,18 +45,37 @@ export function AuthProvider({ children }) {
 
   // Check token on mount
   useEffect(() => {
-    setLoading(true);
-    validateToken().finally(() => setLoading(false));
+    let mounted = true;
+
+    const bootstrap = async () => {
+      setLoading(true);
+      try {
+        await ensureCsrfToken();
+        await validateToken();
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    bootstrap();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const login = async (email, password) => {
     setLoading(true);
     setError(null);
     try {
+      await ensureCsrfToken();
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: withCsrfHeader({ "Content-Type": "application/json" }),
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -75,10 +98,12 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
+      await ensureCsrfToken();
       const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: withCsrfHeader({ "Content-Type": "application/json" }),
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       if (!response.ok) {

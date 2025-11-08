@@ -9,7 +9,7 @@ import {
   AiOutlineLoading3Quarters,
 } from "react-icons/ai";
 import { useAuth } from "@/hooks/useAuth";
-import { validateLogin, validateEmail } from "@/lib/validation/authValidation";
+import { loginSchema, formatZodErrors } from "@/lib/validations";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -29,12 +29,13 @@ export default function LoginForm() {
   }, [isAuthenticated, authLoading, router]);
 
   const validateField = (field, value) => {
-    if (field === "email") {
-      const validation = validateEmail(value);
-      return validation.error;
+    const fieldSchema = loginSchema.shape[field];
+    if (!fieldSchema) {
+      return null;
     }
-    if (field === "password") {
-      return !value ? "Password is required" : null;
+    const result = fieldSchema.safeParse(value);
+    if (!result.success) {
+      return result.error.issues[0]?.message ?? "Invalid value";
     }
     return null;
   };
@@ -62,16 +63,16 @@ export default function LoginForm() {
     e.preventDefault();
     setError(null);
 
-    const validation = validateLogin(email, password);
-    if (!validation.valid) {
-      setFieldErrors({ [validation.field]: validation.error });
+    const validationResult = loginSchema.safeParse({ email, password });
+    if (!validationResult.success) {
+      setFieldErrors(formatZodErrors(validationResult.error));
       setTouched({ email: true, password: true });
       return;
     }
 
     setLoading(true);
     try {
-      await login(email, password);
+      await login(validationResult.data.email, validationResult.data.password);
       router.push("/");
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
@@ -80,8 +81,7 @@ export default function LoginForm() {
     }
   };
 
-  const isFormValid =
-    !fieldErrors.email && !fieldErrors.password && email && password;
+  const isFormValid = loginSchema.safeParse({ email, password }).success;
 
   // Show loading while checking authentication
   if (authLoading) {

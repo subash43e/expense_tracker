@@ -1,17 +1,24 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { validateCsrfToken, clearCsrfCookie } from "@/lib/security/csrf";
 
 export async function POST(req) {
   try {
-    // Clear the authentication cookie
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Logged out successfully' 
-    }, { 
-      status: 200,
-      headers: {
-        'Set-Cookie': 'token=; HttpOnly; Path=/; Max-Age=0',
-      },
+    validateCsrfToken(req);
+    const response = NextResponse.json(
+      { success: true, message: "Logged out successfully" },
+      { status: 200 }
+    );
+    response.cookies.set({
+      name: "token",
+      value: "",
+      httpOnly: true,
+      path: "/",
+      maxAge: 0,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
     });
+    clearCsrfCookie(response);
+    return response;
   } catch (error) {
     return NextResponse.json({ 
       success: false, 

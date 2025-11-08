@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
-import { validateExpenseForm, hasValidationErrors } from "@/lib/validation/expenseValidation";
+import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
 
 export default function AddExpense({ onSuccess }) {
   const [description, setDescription] = useState("");
@@ -25,14 +25,20 @@ export default function AddExpense({ onSuccess }) {
     e.preventDefault();
     setMessage(null);
 
-    // Validate form before submission using extracted validation utility
-    const validationErrors = validateExpenseForm({ description, amount, category, date });
-    setErrors(validationErrors);
+    const validationResult = createExpenseSchema.safeParse({
+      description,
+      amount,
+      category,
+      date,
+    });
 
-    if (hasValidationErrors(validationErrors)) {
+    if (!validationResult.success) {
+      setErrors(formatZodErrors(validationResult.error));
       setMessage({ type: "error", text: "Please fix the errors below" });
       return;
     }
+
+    setErrors({});
 
     setIsLoading(true);
 
@@ -42,12 +48,7 @@ export default function AddExpense({ onSuccess }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          description: description.trim(), 
-          amount: parseFloat(amount), 
-          category: category.trim(),
-          date: new Date(date)
-        }),
+        body: JSON.stringify(validationResult.data),
       });
 
       const data = await res.json();
@@ -62,7 +63,7 @@ export default function AddExpense({ onSuccess }) {
         
         // Call success callback to refresh expense list
         if (onSuccess) {
-          onSuccess();
+          await onSuccess();
         }
       } else {
         setMessage({ type: "error", text: data.error || "Something went wrong!" });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { authFetch } from "@/lib/authFetch";
 
 export default function useFetchExpenses(initialExpenses) {
@@ -6,7 +6,7 @@ export default function useFetchExpenses(initialExpenses) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchExpenses = async (queryParams = {}) => {
+  const fetchExpenses = useCallback(async (queryParams = {}) => {
     setLoading(true);
     setError(null);
     try {
@@ -23,7 +23,7 @@ export default function useFetchExpenses(initialExpenses) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [setExpenses, setError, setLoading]);
 
   return { expenses, setExpenses, loading, error, fetchExpenses };
 }

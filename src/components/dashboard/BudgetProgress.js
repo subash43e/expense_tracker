@@ -1,89 +1,85 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
-import { authFetch } from "@/lib/authFetch";
 
-export default function BudgetProgress() {
-  const [currentSpending, setCurrentSpending] = useState(0);
-  const [yearlySpending, setYearlySpending] = useState(0);
-  const [monthlyBudget, setMonthlyBudget] = useState(5000);
+export default function BudgetProgress({ expenses = [], isLoading, error }) {
+  const monthlyBudget = 5000;
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationType, setNotificationType] = useState("warning"); // warning, danger, success
+
+  const {
+    currentSpending,
+    yearlySpending,
+    notificationType,
+    shouldShowNotification,
+  } = useMemo(() => {
+    if (!Array.isArray(expenses) || expenses.length === 0) {
+      return {
+        currentSpending: 0,
+        yearlySpending: 0,
+        notificationType: "success",
+        shouldShowNotification: false,
+      };
+    }
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const monthlyExpenses = expenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+      return (
+        expenseDate.getMonth() === currentMonth &&
+        expenseDate.getFullYear() === currentYear
+      );
+    });
+
+    const yearlyExpenses = expenses.filter((expense) => {
+      const expenseDate = new Date(expense.date);
+      return expenseDate.getFullYear() === currentYear;
+    });
+
+    const totalMonthlySpent = monthlyExpenses.reduce(
+      (sum, expense) => sum + expense.amount,
+      0
+    );
+
+    const totalYearlySpent = yearlyExpenses.reduce(
+      (sum, expense) => sum + expense.amount,
+      0
+    );
+
+    const percentage = (totalMonthlySpent / monthlyBudget) * 100;
+    let type = "success";
+    let displayNotification = false;
+
+    if (totalMonthlySpent > monthlyBudget) {
+      type = "danger";
+      displayNotification = true;
+    } else if (percentage >= 80) {
+      type = "warning";
+      displayNotification = true;
+    } else if (percentage >= 50) {
+      type = "info";
+      displayNotification = false;
+    }
+
+    return {
+      currentSpending: totalMonthlySpent,
+      yearlySpending: totalYearlySpent,
+      notificationType: type,
+      shouldShowNotification: displayNotification,
+    };
+  }, [expenses, monthlyBudget]);
 
   useEffect(() => {
-    const fetchExpenses = async () => {
-      const res = await authFetch("/api/expenses");
-      const data = await res.json();
+    setShowNotification(shouldShowNotification);
+  }, [shouldShowNotification, currentSpending]);
 
-      // Handle both response formats: paginated (data.expenses) and simple (data.data)
-      let expenses = [];
-      if (data.data && Array.isArray(data.data)) {
-        expenses = data.data;
-      }
-
-      if (expenses.length === 0) {
-        console.warn("No expenses found or invalid data format.");
-        setCurrentSpending(0);
-        setYearlySpending(0);
-        return;
-      }
-
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
-
-      const monthlyExpenses = expenses.filter((expense) => {
-        const expenseDate = new Date(expense.date);
-        return (
-          expenseDate.getMonth() === currentMonth &&
-          expenseDate.getFullYear() === currentYear
-        );
-      });
-
-      const yearlyExpenses = expenses.filter((expense) => {
-        const expenseDate = new Date(expense.date);
-        return expenseDate.getFullYear() === currentYear;
-      });
-
-      const totalMonthlySpent = monthlyExpenses.reduce(
-        (sum, expense) => sum + expense.amount,
-        0
-      );
-      setCurrentSpending(totalMonthlySpent);
-
-      const totalYearlySpent = yearlyExpenses.reduce(
-        (sum, expense) => sum + expense.amount,
-        0
-      );
-      setYearlySpending(totalYearlySpent);
-
-      // Check budget thresholds and show notifications
-      const percentage = (totalMonthlySpent / monthlyBudget) * 100;
-      if (totalMonthlySpent > monthlyBudget) {
-        setNotificationType("danger");
-        setShowNotification(true);
-      } else if (percentage >= 80) {
-        setNotificationType("warning");
-        setShowNotification(true);
-      } else if (percentage >= 50) {
-        setNotificationType("info");
-        setShowNotification(false); // Don't show notification at 50%
-      } else {
-        setNotificationType("success");
-        setShowNotification(false);
-      }
-    };
-
-    fetchExpenses();
-  }, [monthlyBudget]);
-
-  // React Compiler automatically memoizes these calculations - no manual useMemo needed
   const percentageSpent = (currentSpending / monthlyBudget) * 100;
   const isOverBudget = currentSpending > monthlyBudget;
   const isNearBudget = percentageSpent >= 80 && percentageSpent < 100;
 
-  // React Compiler automatically memoizes this function - no manual useMemo needed
   const getNotificationMessage = () => {
     if (isOverBudget) {
       return `You've exceeded your budget by $${(
@@ -97,10 +93,25 @@ export default function BudgetProgress() {
     return "";
   };
 
-  // React Compiler automatically memoizes this function - no manual useCallback needed
   const handleDismissNotification = () => {
     setShowNotification(false);
   };
+
+  if (isLoading) {
+    return (
+      <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+        <p className="text-gray-600 dark:text-gray-300">Calculating budget insights...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+        <p className="text-red-600 dark:text-red-400">Failed to load budget data: {error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -248,3 +259,17 @@ export default function BudgetProgress() {
     </div>
   );
 }
+
+BudgetProgress.propTypes = {
+  expenses: PropTypes.arrayOf(
+    PropTypes.shape({
+      amount: PropTypes.number.isRequired,
+      date: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.instanceOf(Date),
+      ]).isRequired,
+    })
+  ),
+  isLoading: PropTypes.bool,
+  error: PropTypes.string,
+};

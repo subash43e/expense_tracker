@@ -10,11 +10,10 @@ import {
 } from "react-icons/ai";
 import { useAuth } from "@/hooks/useAuth";
 import {
-  validateEmail,
-  validatePassword,
-  validatePasswordMatch,
-  validateRegistration,
-} from "@/lib/validation/authValidation";
+  registerFormSchema,
+  evaluatePasswordStrength,
+  formatZodErrors,
+} from "@/lib/validations";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -26,10 +25,9 @@ export default function RegisterForm() {
   const [error, setError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [touched, setTouched] = useState({});
-  const [passwordStrength, setPasswordStrength] = useState({
-    strength: "weak",
-    requirements: {},
-  });
+  const [passwordStrength, setPasswordStrength] = useState(() =>
+    evaluatePasswordStrength("")
+  );
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -38,24 +36,20 @@ export default function RegisterForm() {
     }
   }, [isAuthenticated, authLoading, router]);
 
-  const validateField = (field, value) => {
-    if (field === "email") {
-      const validation = validateEmail(value);
-      return validation.error;
+  const validateField = (field, value, overrides = {}) => {
+    const formState = {
+      email,
+      password,
+      confirmPassword,
+      ...overrides,
+      [field]: value,
+    };
+    const result = registerFormSchema.safeParse(formState);
+    if (result.success) {
+      return null;
     }
-    if (field === "password") {
-      const validation = validatePassword(value);
-      setPasswordStrength({
-        strength: validation.strength,
-        requirements: validation.requirements,
-      });
-      return validation.error;
-    }
-    if (field === "confirmPassword") {
-      const validation = validatePasswordMatch(password, value);
-      return validation.error;
-    }
-    return null;
+    const errors = formatZodErrors(result.error);
+    return errors[field] ?? null;
   };
 
   const handleBlur = (field) => {
@@ -74,19 +68,29 @@ export default function RegisterForm() {
     if (field === "email") setEmail(value);
     if (field === "password") {
       setPassword(value);
-      if (touched.password) {
-        const validation = validatePassword(value);
-        setPasswordStrength({
-          strength: validation.strength,
-          requirements: validation.requirements,
-        });
-      }
+      const strength = evaluatePasswordStrength(value);
+      setPasswordStrength(strength);
     }
     if (field === "confirmPassword") setConfirmPassword(value);
 
     if (touched[field]) {
-      const fieldError = validateField(field, value);
+      const overrides =
+        field === "password"
+          ? { password: value }
+          : field === "confirmPassword"
+          ? { confirmPassword: value }
+          : {};
+      const fieldError = validateField(field, value, overrides);
       setFieldErrors((prev) => ({ ...prev, [field]: fieldError }));
+    }
+
+    if (field === "password" && touched.confirmPassword) {
+      const confirmError = validateField(
+        "confirmPassword",
+        confirmPassword,
+        { password: value, confirmPassword }
+      );
+      setFieldErrors((prev) => ({ ...prev, confirmPassword: confirmError }));
     }
   };
 
@@ -94,16 +98,24 @@ export default function RegisterForm() {
     e.preventDefault();
     setError(null);
 
-    const validation = validateRegistration(email, password, confirmPassword);
-    if (!validation.valid) {
-      setFieldErrors({ [validation.field]: validation.error });
+    const validationResult = registerFormSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    });
+
+    if (!validationResult.success) {
+      setFieldErrors(formatZodErrors(validationResult.error));
       setTouched({ email: true, password: true, confirmPassword: true });
       return;
     }
 
     setLoading(true);
     try {
-      await register(email, password);
+      await register(
+        validationResult.data.email,
+        validationResult.data.password
+      );
       router.push("/login");
     } catch (err) {
       setError(err.message || "Registration failed. Please try again.");
@@ -113,13 +125,11 @@ export default function RegisterForm() {
   };
 
   const isFormValid =
-    !fieldErrors.email &&
-    !fieldErrors.password &&
-    !fieldErrors.confirmPassword &&
-    email &&
-    password &&
-    confirmPassword &&
-    passwordStrength.strength === "strong";
+    registerFormSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    }).success;
 
   const getStrengthColor = () => {
     if (passwordStrength.strength === "weak") return "bg-red-500";

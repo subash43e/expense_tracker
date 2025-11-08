@@ -6,9 +6,11 @@ import {
   handleApi,
   resolveAndValidateObjectId,
 } from "@/lib/api/utils";
+import { validateCsrfToken } from "@/lib/security/csrf";
 
 export async function handleDeleteExpense(request, params) {
   return handleApi(async () => {
+    validateCsrfToken(request);
     const userId = ensureAuthenticated(request);
     const id = await resolveAndValidateObjectId(params);
 
