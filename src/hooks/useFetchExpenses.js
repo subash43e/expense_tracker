@@ -23,7 +23,7 @@ export default function useFetchExpenses(initialExpenses) {
     } finally {
       setLoading(false);
     }
-  }, [setExpenses, setError, setLoading]);
+  }, []); // setState functions are stable and don't need to be in dependencies
 
   return { expenses, setExpenses, loading, error, fetchExpenses };
 }

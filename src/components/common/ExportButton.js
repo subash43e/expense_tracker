@@ -34,6 +34,9 @@ export const exportToCSV = (expenses, filename = "expenses.csv") => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  
+  // Clean up the blob URL to free memory
+  URL.revokeObjectURL(url);
 };
 
 // Export to JSON
@@ -54,6 +57,9 @@ export const exportToJSON = (expenses, filename = "expenses.json") => {
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
+  
+  // Clean up the blob URL to free memory
+  URL.revokeObjectURL(url);
 };
 
 // Export Button Component
