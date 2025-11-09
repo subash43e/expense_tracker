@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import ExportButton from "../common/ExportButton";
 import { authFetch } from "@/lib/authFetch";
 import useBudget from "@/hooks/useBudget";
@@ -39,9 +39,9 @@ export default function Analytics() {
 
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [fetchExpenses]);
 
-  const fetchExpenses = async () => {
+  const fetchExpenses = useCallback(async () => {
     try {
       const res = await authFetch("/api/expenses");
       const data = await res.json();
@@ -52,7 +52,7 @@ export default function Analytics() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   // Filter expenses based on selected period
   const filteredExpenses = useMemo(() => {

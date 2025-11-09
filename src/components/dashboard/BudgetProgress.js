@@ -43,7 +43,15 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
 
   const monthlyBudget = budgetData?.monthlyLimit || 5000;
   const currency = budgetData?.currency || "USD";
-  const currencySymbol = getCurrencySymbol(currency);
+
+  // Memoize current date values to avoid recalculation
+  const { currentMonth, currentYear } = useMemo(() => {
+    const now = new Date();
+    return {
+      currentMonth: now.getMonth(),
+      currentYear: now.getFullYear()
+    };
+  }, []);
 
   const {
     currentSpending,
@@ -59,10 +67,6 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
         shouldShowNotification: false,
       };
     }
-
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
 
     const monthlyExpenses = expenses.filter((expense) => {
       const expenseDate = new Date(expense.date);
@@ -108,7 +112,7 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
       notificationType: type,
       shouldShowNotification: displayNotification,
     };
-  }, [expenses, monthlyBudget]);
+  }, [expenses, monthlyBudget, currentMonth, currentYear]);
 
   const percentageSpent = (currentSpending / monthlyBudget) * 100;
   const isOverBudget = currentSpending > monthlyBudget;

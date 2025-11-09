@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { memo } from "react";
 import PropTypes from "prop-types";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
 import useBudget from "@/hooks/useBudget";
 import { formatCurrency } from "@/lib/currency";
 
-export default function ExpenseList({
+function ExpenseList({
   expensesToDisplay = [],
   onDelete,
   pathname,
@@ -84,3 +84,5 @@ ExpenseList.propTypes = {
   onDelete: PropTypes.func.isRequired,
   pathname: PropTypes.string,
 };
+
+export default memo(ExpenseList);

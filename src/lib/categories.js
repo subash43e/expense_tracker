@@ -17,15 +17,23 @@ export const EXPENSE_CATEGORIES = [
   { value: "Other", label: "📦 Other", icon: "📦" },
 ];
 
+// Cache for category lookups to avoid repeated array searches
+const categoryIconCache = new Map();
+const categoryLabelCache = new Map();
+
+// Pre-populate caches on module load for better performance
+EXPENSE_CATEGORIES.forEach((cat) => {
+  categoryIconCache.set(cat.value, cat.icon);
+  categoryLabelCache.set(cat.value, cat.label);
+});
+
 /**
  * Get the icon for a given category value.
  * @param {string} categoryValue - The value of the category.
  * @returns {string} - The icon associated with the category, or a default icon.
  */
 export const getCategoryIcon = (categoryValue) => {
-  return (
-    EXPENSE_CATEGORIES.find((cat) => cat.value === categoryValue)?.icon || "📦"
-  );
+  return categoryIconCache.get(categoryValue) || "📦";
 };
 
 /**
@@ -34,8 +42,5 @@ export const getCategoryIcon = (categoryValue) => {
  * @returns {string} - The label associated with the category, or the category value itself.
  */
 export const getCategoryLabel = (categoryValue) => {
-  return (
-    EXPENSE_CATEGORIES.find((cat) => cat.value === categoryValue)?.label ||
-    categoryValue
-  );
+  return categoryLabelCache.get(categoryValue) || categoryValue;
 };

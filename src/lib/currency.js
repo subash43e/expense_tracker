@@ -2,6 +2,10 @@
  * Currency utility functions for the expense tracker app
  */
 
+// Cache for formatted currency values to avoid repeated calculations
+const formatCache = new Map();
+const CACHE_SIZE_LIMIT = 1000;
+
 export const CURRENCY_SYMBOLS = {
   USD: "$",
   EUR: "€",
@@ -39,12 +43,30 @@ export function getCurrencySymbol(currencyCode = "USD") {
  * @returns {string} - Formatted currency string
  */
 export function formatCurrency(amount, currencyCode = "USD", includeDecimals = true) {
+  // Create cache key
+  const cacheKey = `${amount}-${currencyCode}-${includeDecimals}`;
+  
+  // Check cache first
+  if (formatCache.has(cacheKey)) {
+    return formatCache.get(cacheKey);
+  }
+
   const symbol = getCurrencySymbol(currencyCode);
   const formattedAmount = includeDecimals
     ? amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     : amount.toLocaleString();
 
-  return `${symbol}${formattedAmount}`;
+  const result = `${symbol}${formattedAmount}`;
+  
+  // Store in cache with size limit
+  if (formatCache.size >= CACHE_SIZE_LIMIT) {
+    // Clear oldest entries (simple FIFO)
+    const firstKey = formatCache.keys().next().value;
+    formatCache.delete(firstKey);
+  }
+  formatCache.set(cacheKey, result);
+  
+  return result;
 }
 
 /**

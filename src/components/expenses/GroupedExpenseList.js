@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, memo } from "react";
 import PropTypes from "prop-types";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
@@ -8,7 +8,7 @@ import { getCategoryIcon } from "@/lib/categories";
 import useBudget from "@/hooks/useBudget";
 import { formatCurrency } from "@/lib/currency";
 
-// Helper function to get time period
+// Helper function to get time period (memoized at module level)
 const getTimePeriod = (date) => {
   const expenseDate = new Date(date);
   const today = new Date();
@@ -16,8 +16,6 @@ const getTimePeriod = (date) => {
   const startOfThisWeek = new Date(startOfToday);
   startOfThisWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
   
-  const startOfThisMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-
   if (expenseDate >= startOfThisWeek) {
     return "This Week";
   } else {
@@ -61,7 +59,7 @@ const groupExpensesByPeriod = (expenses) => {
   return sortedGroups;
 };
 
-export default function GroupedExpenseList({
+function GroupedExpenseList({
   expensesToDisplay,
   handleDelete,
 }) {
@@ -225,3 +223,5 @@ GroupedExpenseList.propTypes = {
   ).isRequired,
   handleDelete: PropTypes.func.isRequired,
 };
+
+export default memo(GroupedExpenseList);
