@@ -1,10 +1,16 @@
 "use client";
 
-import { useDarkMode } from "./DarkModeProvider";
+import { useDarkMode } from "../../hooks/useDarkmode";
 
 export default function DarkModeToggle() {
-  const { isDark, toggleDarkMode } = useDarkMode();
+  const { isDark, setIsDark } = useDarkMode();
 
+  const toggleDarkMode = (e) => {
+    e.preventDefault();
+      setIsDark(p => !p)
+  }
+
+  console.log("Dark mode toggle rendered", isDark);
   return (
     <button
       onClick={toggleDarkMode}
