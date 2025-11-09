@@ -1,10 +1,49 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
+import { authFetch } from "@/lib/authFetch";
+import { formatCurrency, getCurrencySymbol } from "@/lib/currency";
 
 export default function BudgetProgress({ expenses = [], isLoading, error }) {
-  const monthlyBudget = 5000;
+  const [budgetData, setBudgetData] = useState(null);
+  const [isBudgetLoading, setIsBudgetLoading] = useState(true);
+
+  const fetchBudget = useCallback(async () => {
+    try {
+      const res = await authFetch("/api/budgets");
+      const data = await res.json();
+
+      if (res.ok && data.budget) {
+        setBudgetData(data.budget);
+      } else {
+        setBudgetData(null);
+      }
+    } catch (error) {
+      console.error("Error fetching budget:", error);
+      setBudgetData(null);
+    } finally {
+      setIsBudgetLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBudget();
+
+    // Listen for budget updates
+    const handleBudgetUpdate = () => {
+      fetchBudget();
+    };
+    window.addEventListener("budgetUpdated", handleBudgetUpdate);
+
+    return () => {
+      window.removeEventListener("budgetUpdated", handleBudgetUpdate);
+    };
+  }, [fetchBudget]);
+
+  const monthlyBudget = budgetData?.monthlyLimit || 5000;
+  const currency = budgetData?.currency || "USD";
+  const currencySymbol = getCurrencySymbol(currency);
 
   const {
     currentSpending,
@@ -77,13 +116,15 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
 
   const getNotificationMessage = () => {
     if (isOverBudget) {
-      return `You've exceeded your budget by $${(
-        currentSpending - monthlyBudget
-      ).toFixed(2)}!`;
+      return `You've exceeded your budget by ${formatCurrency(
+        currentSpending - monthlyBudget,
+        currency
+      )}!`;
     } else if (isNearBudget) {
-      return `You're approaching your budget limit! $${(
-        monthlyBudget - currentSpending
-      ).toFixed(2)} remaining.`;
+      return `You're approaching your budget limit! ${formatCurrency(
+        monthlyBudget - currentSpending,
+        currency
+      )} remaining.`;
     }
     return "";
   };
@@ -94,7 +135,7 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
     setDismissedNotification(true);
   };
 
-  if (isLoading) {
+  if (isLoading || isBudgetLoading) {
     return (
       <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
         <p className="text-gray-600 dark:text-gray-300">Calculating budget insights...</p>
@@ -106,6 +147,40 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
     return (
       <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
         <p className="text-red-600 dark:text-red-400">Failed to load budget data: {error}</p>
+      </div>
+    );
+  }
+
+  if (!budgetData) {
+    return (
+      <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
+        <div className="text-center py-6">
+          <svg
+            className="w-16 h-16 text-gray-400 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+            />
+          </svg>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            No Budget Set
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Create a monthly budget in Settings to track your spending progress
+          </p>
+          <a
+            href="/settings"
+            className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+          >
+            Set Up Budget
+          </a>
+        </div>
       </div>
     );
   }
@@ -203,9 +278,9 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
                     isOverBudget ? "text-red-500" : "text-green-500"
                   }`}
                 >
-                  ${currentSpending}
+                  {formatCurrency(currentSpending, currency, false)}
                 </span>{" "}
-                / ${monthlyBudget}
+                / {formatCurrency(monthlyBudget, currency, false)}
               </h2>
               <p
                 className={`text-sm ${
@@ -218,10 +293,7 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
               </p>
             </div>
           </div>
-          <div className="text-black dark:text-white ">
-            <div className="text-end">monthly spend: ${currentSpending}</div>
-            <div className="text-end">Yearly spend: ${yearlySpending}</div>
-          </div>
+          
         </div>
 
         <div className="w-full  relative ">

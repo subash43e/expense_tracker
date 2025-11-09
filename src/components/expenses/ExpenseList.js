@@ -3,12 +3,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
+import useBudget from "@/hooks/useBudget";
+import { formatCurrency } from "@/lib/currency";
 
 export default function ExpenseList({
   expensesToDisplay = [],
   onDelete,
   pathname,
 }) {
+  const { currency } = useBudget();
+
   return (
     <>
       {expensesToDisplay.length === 0 ? (
@@ -27,7 +31,7 @@ export default function ExpenseList({
               </p>
               <p></p>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                ${expense.amount}
+                {formatCurrency(expense.amount, currency)}
               </p>
             </div>
             <div className="flex items-center gap-2">

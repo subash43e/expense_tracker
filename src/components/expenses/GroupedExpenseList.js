@@ -5,6 +5,8 @@ import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import Link from "next/link";
 import { getCategoryIcon } from "@/lib/categories";
+import useBudget from "@/hooks/useBudget";
+import { formatCurrency } from "@/lib/currency";
 
 // Helper function to get time period
 const getTimePeriod = (date) => {
@@ -63,6 +65,7 @@ export default function GroupedExpenseList({
   expensesToDisplay,
   handleDelete,
 }) {
+  const { currency } = useBudget();
   const groupedExpenses = useMemo(
     () => groupExpensesByPeriod(expensesToDisplay),
     [expensesToDisplay]
@@ -103,7 +106,7 @@ export default function GroupedExpenseList({
                   Total Expenses
                 </p>
                 <p className="text-white text-4xl font-bold">
-                  ${totalAmount.toFixed(2)}
+                  {formatCurrency(totalAmount, currency)}
                 </p>
               </div>
               <div className="text-right">
@@ -178,7 +181,7 @@ export default function GroupedExpenseList({
                     <div className="flex items-center gap-3 ml-4">
                       <div className="text-right">
                         <p className="font-bold text-lg text-gray-900 dark:text-gray-50">
-                          ${expense.amount}
+                          {formatCurrency(expense.amount, currency)}
                         </p>
                       </div>
                       <div className="flex items-center gap-1">

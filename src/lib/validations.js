@@ -159,6 +159,64 @@ export const loginSchema = z.object({
 });
 
 /**
+ * Validation schema for creating a budget.
+ */
+export const createBudgetSchema = z.object({
+  monthlyLimit: z
+    .union([
+      z.number(),
+      z.string().trim().min(1, { message: "Monthly limit is required" }),
+    ])
+    .transform((val) => (typeof val === "string" ? Number(val) : val))
+    .refine((val) => Number.isFinite(val), {
+      message: "Monthly limit must be a valid number",
+    })
+    .refine((val) => val >= 1, {
+      message: "Monthly limit must be at least $1",
+    })
+    .refine((val) => val <= 10000000, {
+      message: "Monthly limit cannot exceed $10,000,000",
+    }),
+  currency: z
+    .string()
+    .trim()
+    .min(3, { message: "Currency must be at least 3 characters" })
+    .max(3, { message: "Currency must be 3 characters (e.g., USD)" })
+    .default("USD"),
+});
+
+/**
+ * Validation schema for updating a budget.
+ */
+export const updateBudgetSchema = z.object({
+  monthlyLimit: z
+    .union([
+      z.number(),
+      z.string().trim().min(1, { message: "Monthly limit is required" }),
+    ])
+    .transform((val) => (typeof val === "string" ? Number(val) : val))
+    .refine((val) => Number.isFinite(val), {
+      message: "Monthly limit must be a valid number",
+    })
+    .refine((val) => val > 0, {
+      message: "Monthly limit must be a positive number",
+    })
+    .refine((val) => val >= 1, {
+      message: "Monthly limit must be at least $1",
+    })
+    .refine((val) => val <= 10000000, {
+      message: "Monthly limit cannot exceed $10,000,000",
+    })
+    .optional(),
+  currency: z
+    .string()
+    .trim()
+    .min(3, { message: "Currency must be at least 3 characters" })
+    .max(3, { message: "Currency must be 3 characters (e.g., USD)" })
+    .optional(),
+});
+
+/**
  * Extracts a map of field errors from a Zod error object.
  */
 export const formatZodErrors = (error) => {

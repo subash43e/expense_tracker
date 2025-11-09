@@ -10,7 +10,6 @@ export default function DarkModeToggle() {
       setIsDark(p => !p)
   }
 
-  console.log("Dark mode toggle rendered", isDark);
   return (
     <button
       onClick={toggleDarkMode}

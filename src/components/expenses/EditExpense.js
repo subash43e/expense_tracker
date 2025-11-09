@@ -5,9 +5,13 @@ import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
 import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
+import useBudget from "@/hooks/useBudget";
+import { getCurrencySymbol } from "@/lib/currency";
 
 export default function EditExpense({ expense }) {
   const router = useRouter();
+  const { currency } = useBudget();
+  const currencySymbol = getCurrencySymbol(currency);
   const [description, setDescription] = useState(expense.description || "");
   const [amount, setAmount] = useState(
     typeof expense.amount === "number" ? String(expense.amount) : ""
@@ -136,11 +140,11 @@ export default function EditExpense({ expense }) {
               className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
               htmlFor="amount"
             >
-              Amount
+              Amount ({currencySymbol})
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">
-                $
+                {currencySymbol}
               </span>
               <input
                 className={`w-full pl-8 pr-3 bg-gray-50 dark:bg-gray-800 border-2 ${

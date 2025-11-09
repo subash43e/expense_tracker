@@ -4,8 +4,12 @@ import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
 import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
+import useBudget from "@/hooks/useBudget";
+import { getCurrencySymbol } from "@/lib/currency";
 
 export default function AddExpense({ onSuccess }) {
+  const { currency } = useBudget();
+  const currencySymbol = getCurrencySymbol(currency);
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
@@ -119,7 +123,7 @@ export default function AddExpense({ onSuccess }) {
               className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               htmlFor="amount"
             >
-              Amount
+              Amount ({currencySymbol})
             </label>
             <input
               className={`w-full bg-gray-50 dark:bg-gray-700 border ${
@@ -129,7 +133,7 @@ export default function AddExpense({ onSuccess }) {
               } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 h-10`}
               id="amount"
               name="amount"
-              placeholder="$0.00"
+              placeholder={`${currencySymbol}0.00`}
               type="number"
               step="0.01"
               min="0"

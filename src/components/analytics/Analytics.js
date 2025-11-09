@@ -2,6 +2,8 @@
 import { useState, useEffect, useMemo } from "react";
 import ExportButton from "../common/ExportButton";
 import { authFetch } from "@/lib/authFetch";
+import useBudget from "@/hooks/useBudget";
+import { formatCurrency } from "@/lib/currency";
 import {
   BarChart,
   Bar,
@@ -30,6 +32,7 @@ const COLORS = [
 ];
 
 export default function Analytics() {
+  const { currency } = useBudget();
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState("month"); // month, year, all
@@ -214,25 +217,25 @@ export default function Analytics() {
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Spent</p>
           <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
-            ${stats.total}
+            {formatCurrency(stats.total, currency, false)}
           </p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Average</p>
           <p className="text-2xl font-bold text-green-600 dark:text-green-400">
-            ${stats.average}
+            {formatCurrency(stats.average, currency, false)}
           </p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Highest</p>
           <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-            ${stats.highest}
+            {formatCurrency(stats.highest, currency, false)}
           </p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Lowest</p>
           <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-            ${stats.lowest}
+            {formatCurrency(stats.lowest, currency, false)}
           </p>
         </div>
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
