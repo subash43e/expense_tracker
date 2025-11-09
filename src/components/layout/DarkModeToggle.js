@@ -1,6 +1,6 @@
 "use client";
 
-import { useDarkMode } from "../../hooks/useDarkmode";
+import { useDarkMode } from "@/contexts/DarkModeContext";
 
 export default function DarkModeToggle() {
   const { isDark, setIsDark } = useDarkMode();
