@@ -2,7 +2,7 @@
 
 import DarkModeToggle from "@/components/layout/DarkModeToggle";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import ExportButton from "@/components/export/ExportButton";
+import ExportButton from "@/components/common/ExportButton";
 import useFetchExpenses from "@/hooks/useFetchExpenses";
 import { authFetch } from "@/lib/authFetch";
 
