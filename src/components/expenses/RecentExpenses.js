@@ -6,8 +6,8 @@ import useModalState from "@/hooks/useModalState";
 import ExpenseFilters from "./ExpenseFilters";
 import ExpenseList from "./ExpenseList";
 import GroupedExpenseList from "./GroupedExpenseList";
-import DeleteConfirmModal from "../modals/DeleteConfirmModal";
-import ExportButton from "../export/ExportButton";
+import DeleteConfirmModal from "../common/modals/DeleteConfirmModal";
+import ExportButton from "../common/ExportButton";
 import { authFetch } from "@/lib/authFetch";
 import { useToast } from "@/components/common/Toast";
 

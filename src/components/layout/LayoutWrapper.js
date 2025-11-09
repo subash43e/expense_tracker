@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/hooks/useAuth';
 import Sidebar from '@/components/layout/Sidebar';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 
 export default function LayoutWrapper({ children }) {
   const { isAuthenticated, loading } = useAuth();

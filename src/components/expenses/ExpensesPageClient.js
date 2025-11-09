@@ -12,7 +12,7 @@ export default function ExpensesPageClient({ initialExpenses }) {
     error,
     fetchExpenses,
   } = useFetchExpenses(initialExpenses);
-
+  
   useEffect(() => {
     fetchExpenses();
   }, [fetchExpenses]);

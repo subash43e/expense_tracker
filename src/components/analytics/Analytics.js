@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
-import ExportButton from "../export/ExportButton";
+import ExportButton from "../common/ExportButton";
 import { authFetch } from "@/lib/authFetch";
 import {
   BarChart,

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Slide up animation for modals */
 @keyframes slideUp {
   from {
     opacity: 0;
