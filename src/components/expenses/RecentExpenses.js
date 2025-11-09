@@ -10,7 +10,6 @@ import DeleteConfirmModal from "../modals/DeleteConfirmModal";
 import ExportButton from "../export/ExportButton";
 import { authFetch } from "@/lib/authFetch";
 import { useToast } from "@/components/common/Toast";
-import styles from "@/styles/RecentExpenses.module.css";
 
 export default function RecentExpenses({
   expenses = [],
@@ -251,8 +250,8 @@ export default function RecentExpenses({
 
   if (error) {
     return (
-      <div className={styles.recentExpensesContainer}>
-        <div className={styles.noExpenses}>
+      <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-50 border border-gray-200 dark:border-gray-600 rounded-lg flex flex-col shadow-sm">
+        <div className="p-8 text-center bg-gray-50 dark:bg-gray-950 text-gray-700 dark:text-gray-300">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -266,7 +265,7 @@ export default function RecentExpenses({
   }
 
   return (
-    <div className={styles.recentExpensesContainer}>
+    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-50 border border-gray-200 dark:border-gray-600 rounded-lg flex flex-col shadow-sm">
       {/* Export buttons for /expenses page */}
       {pathname === "/expenses" && (
         <div className="flex justify-end gap-3 mb-4">
@@ -292,7 +291,7 @@ export default function RecentExpenses({
         setSearchQuery={setSearchQuery}
       />
       {loading ? (
-        <div className={styles.loadingMessage}>
+        <div className="p-8 text-center text-gray-700 dark:text-gray-300">
           Loading expenses...
         </div>
       ) : (
