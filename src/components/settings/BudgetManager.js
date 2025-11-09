@@ -2,19 +2,7 @@
 import { useState, useEffect } from "react";
 import { authFetch } from "@/lib/authFetch";
 import { createBudgetSchema, formatZodErrors } from "@/lib/validations";
-
-function getCurrencySymbol(code) {
-  switch (code) {
-    case "USD": return "$";
-    case "EUR": return "€";
-    case "GBP": return "£";
-    case "JPY": return "¥";
-    case "CAD": return "C$";
-    case "AUD": return "A$";
-    case "INR": return "₹";
-    default: return code;
-  }
-}
+import { getCurrencySymbol } from "@/lib/currency";
 
 export default function BudgetManager() {
   const [budget, setBudget] = useState(null);
@@ -28,14 +16,17 @@ export default function BudgetManager() {
 
   useEffect(() => {
     fetchBudget();
+    console.log(fetchBudget());
   }, []);
 
+  console.log("Budget ", budget?.currency);
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
+
 
   const fetchBudget = async () => {
     try {
@@ -56,6 +47,7 @@ export default function BudgetManager() {
       setIsLoading(false);
     }
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -197,7 +189,7 @@ export default function BudgetManager() {
                     Monthly Spending Limit
                   </p>
                   <p className="text-3xl font-bold text-gray-900 dark:text-white">
-                    ${budget.monthlyLimit.toLocaleString()}
+                  {getCurrencySymbol(currency) }  {budget.monthlyLimit.toLocaleString()}
                   </p>
                 </div>
                 <div className="text-right">
@@ -205,7 +197,7 @@ export default function BudgetManager() {
                     Currency
                   </p>
                   <p className="text-lg font-medium text-gray-900 dark:text-white">
-                    {budget.currency}
+                     {budget.currency}
                   </p>
                 </div>
               </div>
@@ -228,7 +220,7 @@ export default function BudgetManager() {
                 className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
                 htmlFor="monthlyLimit"
               >
-                Monthly Spending Limit ({getCurrencySymbol(currency)})
+                Monthly Spending Limit
               </label>
               <input
                 id="monthlyLimit"

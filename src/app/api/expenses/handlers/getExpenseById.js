@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchExpenseById } from "@/lib/handlers/expenseHandlers";
+import { getExpenseById } from "@/lib/expenses";
 import {
   ApiError,
   ensureAuthenticated,
@@ -12,7 +12,7 @@ export async function handleGetExpenseById(request, params) {
     const userId = ensureAuthenticated(request);
     const id = await resolveAndValidateObjectId(params);
 
-    const expense = await fetchExpenseById(id, userId);
+    const expense = await getExpenseById(id, userId);
     if (!expense) {
       throw new ApiError(404, "Expense not found");
     }

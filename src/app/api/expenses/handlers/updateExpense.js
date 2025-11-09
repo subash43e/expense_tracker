@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { modifyExpense } from "@/lib/handlers/expenseHandlers";
+import { updateExpense } from "@/lib/expenses";
 import { updateExpenseSchema } from "@/lib/validations";
 import {
   ApiError,
@@ -18,7 +18,7 @@ export async function handleUpdateExpense(request, params) {
     const body = await request.json();
     const validatedData = updateExpenseSchema.parse(body);
 
-    const expense = await modifyExpense(id, userId, validatedData);
+    const expense = await updateExpense(id, userId, validatedData);
     if (!expense) {
       throw new ApiError(404, "Expense not found");
     }

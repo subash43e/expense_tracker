@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { removeExpense } from "@/lib/handlers/expenseHandlers";
+import { deleteExpense } from "@/lib/expenses";
 import {
   ApiError,
   ensureAuthenticated,
@@ -14,7 +14,7 @@ export async function handleDeleteExpense(request, params) {
     const userId = ensureAuthenticated(request);
     const id = await resolveAndValidateObjectId(params);
 
-    const expense = await removeExpense(id, userId);
+    const expense = await deleteExpense(id, userId);
     if (!expense) {
       throw new ApiError(404, "Expense not found");
     }

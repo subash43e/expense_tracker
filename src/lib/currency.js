@@ -1,6 +1,4 @@
-/**
- * Currency utility functions for the expense tracker app
- */
+
 
 export const CURRENCY_SYMBOLS = {
   USD: "$",
@@ -22,22 +20,12 @@ export const CURRENCY_NAMES = {
   INR: "Indian Rupee",
 };
 
-/**
- * Get the currency symbol for a given currency code
- * @param {string} currencyCode - The currency code (e.g., "USD", "INR")
- * @returns {string} - The currency symbol
- */
+
 export function getCurrencySymbol(currencyCode = "USD") {
   return CURRENCY_SYMBOLS[currencyCode] || "$";
 }
 
-/**
- * Format an amount with the appropriate currency symbol
- * @param {number} amount - The amount to format
- * @param {string} currencyCode - The currency code
- * @param {boolean} includeDecimals - Whether to include decimal places
- * @returns {string} - Formatted currency string
- */
+
 export function formatCurrency(amount, currencyCode = "USD", includeDecimals = true) {
   const symbol = getCurrencySymbol(currencyCode);
   const formattedAmount = includeDecimals
@@ -47,11 +35,6 @@ export function formatCurrency(amount, currencyCode = "USD", includeDecimals = t
   return `${symbol}${formattedAmount}`;
 }
 
-/**
- * Get currency name from code
- * @param {string} currencyCode - The currency code
- * @returns {string} - The currency name
- */
 export function getCurrencyName(currencyCode = "USD") {
   return CURRENCY_NAMES[currencyCode] || "US Dollar";
 }
