@@ -7,6 +7,9 @@ import { authFetch } from "@/lib/authFetch";
 import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
 import useBudget from "@/hooks/useBudget";
 import { getCurrencySymbol } from "@/lib/currency";
+import Alert from "@/components/common/Alert";
+import Spinner from "@/components/common/Spinner";
+import FormField from "@/components/common/FormField";
 
 export default function EditExpense({ expense }) {
   const router = useRouter();
@@ -24,7 +27,6 @@ export default function EditExpense({ expense }) {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // React Compiler automatically memoizes this function - no manual useCallback needed
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(null);
@@ -43,7 +45,6 @@ export default function EditExpense({ expense }) {
     }
 
     setErrors({});
-
     setIsLoading(true);
 
     try {
@@ -59,7 +60,6 @@ export default function EditExpense({ expense }) {
 
       if (res.ok) {
         setMessage({ type: "success", text: "Expense updated successfully!" });
-        // Redirect to expenses page after 1.5 seconds
         setTimeout(() => {
           router.push("/expenses");
         }, 1500);
@@ -73,77 +73,39 @@ export default function EditExpense({ expense }) {
     }
   };
 
-  // React Compiler automatically memoizes this function - no manual useCallback needed
   const handleCancel = () => {
     router.push("/expenses");
   };
 
   return (
     <div className="w-full">
-      {message && (
-        <div
-          className={`p-4 mb-6 text-sm rounded-lg border ${
-            message.type === "success"
-              ? "bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800"
-              : "bg-red-50 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            {message.type === "success" ? (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            )}
-            <span className="font-medium">{message.text}</span>
-          </div>
-        </div>
-      )}
+      <Alert 
+        type={message?.type || "error"} 
+        message={message?.text} 
+        showIcon={true}
+      />
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
-            <label
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
-              htmlFor="description"
-            >
-              Description
-            </label>
-            <input
-              className={`w-full bg-gray-50 dark:bg-gray-800 border-2 ${
-                errors.description
-                  ? "border-red-500 dark:border-red-400 focus:ring-red-500"
-                  : "border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400"
-              } rounded-lg focus:ring-2 focus:ring-opacity-50 p-3 text-gray-900 dark:text-gray-100 transition-colors placeholder-gray-400 dark:placeholder-gray-500`}
-              id="description"
+            <FormField
+              label="Description"
               name="description"
-              placeholder="e.g. Coffee with friends"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              error={errors.description}
+              placeholder="e.g. Coffee with friends"
               required
+              variant="spacious"
             />
-            {errors.description && (
-              <p className="text-red-600 dark:text-red-400 text-sm mt-1.5 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                {errors.description}
-              </p>
-            )}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
-              htmlFor="amount"
-            >
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
               Amount ({currencySymbol})
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium z-10">
                 {currencySymbol}
               </span>
               <input
@@ -174,69 +136,31 @@ export default function EditExpense({ expense }) {
           </div>
 
           <div>
-            <label
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
-              htmlFor="category"
-            >
-              Category
-            </label>
-            <select
-              className={`w-full bg-gray-50 dark:bg-gray-800 border-2 ${
-                errors.category
-                  ? "border-red-500 dark:border-red-400 focus:ring-red-500"
-                  : "border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400"
-              } rounded-lg focus:ring-2 focus:ring-opacity-50 p-3 text-gray-900 dark:text-gray-100 transition-colors`}
-              id="category"
+            <FormField
+              label="Category"
               name="category"
+              type="select"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              error={errors.category}
+              placeholder="Select a category"
+              options={EXPENSE_CATEGORIES}
               required
-            >
-              <option value="">Select a category</option>
-              {EXPENSE_CATEGORIES.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="text-red-600 dark:text-red-400 text-sm mt-1.5 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                {errors.category}
-              </p>
-            )}
+              variant="spacious"
+            />
           </div>
 
           <div className="md:col-span-2">
-            <label
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
-              htmlFor="date"
-            >
-              Date
-            </label>
-            <input
-              className={`w-full bg-gray-50 dark:bg-gray-800 border-2 ${
-                errors.date
-                  ? "border-red-500 dark:border-red-400 focus:ring-red-500"
-                  : "border-gray-200 dark:border-gray-700 focus:border-indigo-500 dark:focus:border-indigo-400"
-              } rounded-lg focus:ring-2 focus:ring-opacity-50 p-3 text-gray-900 dark:text-gray-100 transition-colors`}
-              id="date"
+            <FormField
+              label="Date"
               name="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              error={errors.date}
               required
+              variant="spacious"
             />
-            {errors.date && (
-              <p className="text-red-600 dark:text-red-400 text-sm mt-1.5 flex items-center gap-1">
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                {errors.date}
-              </p>
-            )}
           </div>
         </div>
 
@@ -260,26 +184,7 @@ export default function EditExpense({ expense }) {
           >
             {isLoading ? (
               <>
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
+                <Spinner size="md" />
                 Updating...
               </>
             ) : (

@@ -6,6 +6,9 @@ import { authFetch } from "@/lib/authFetch";
 import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
 import useBudget from "@/hooks/useBudget";
 import { getCurrencySymbol } from "@/lib/currency";
+import Alert from "@/components/common/Alert";
+import Spinner from "@/components/common/Spinner";
+import FormField from "@/components/common/FormField";
 
 export default function AddExpense({ onSuccess }) {
   const { currency } = useBudget();
@@ -81,123 +84,60 @@ export default function AddExpense({ onSuccess }) {
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
-      {message && (
-        <div
-          className={`p-4 mb-4 text-sm rounded-lg border ${message.type === "success"
-            ? "bg-green-50 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-200 dark:border-green-800"
-            : "bg-red-50 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-200 dark:border-red-800"
-            }`}
-        >
-          {message.text}
-        </div>
-      )}
+      <Alert 
+        type={message?.type || "error"} 
+        message={message?.text} 
+      />
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
           <div className="md:col-span-2">
-            <label
-              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-              htmlFor="description"
-            >
-              Description
-            </label>
-            <input
-              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
-                errors.description 
-                  ? "border-red-500 dark:border-red-400" 
-                  : "border-gray-300 dark:border-gray-600"
-              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 h-10 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3`}
-              id="description"
+            <FormField
+              label="Description"
               name="description"
-              placeholder="e.g. Coffee with friends"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              error={errors.description}
+              placeholder="e.g. Coffee with friends"
               required
             />
-            {errors.description && (
-              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.description}</p>
-            )}
           </div>
           <div className="">
-            <label
-              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-              htmlFor="amount"
-            >
-              Amount ({currencySymbol})
-            </label>
-            <input
-              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
-                errors.amount 
-                  ? "border-red-500 dark:border-red-400" 
-                  : "border-gray-300 dark:border-gray-600"
-              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 px-3 h-10`}
-              id="amount"
+            <FormField
+              label={`Amount (${currencySymbol})`}
               name="amount"
-              placeholder={`${currencySymbol}0.00`}
               type="number"
-              step="0.01"
-              min="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
+              error={errors.amount}
+              placeholder={`${currencySymbol}0.00`}
               required
+              inputProps={{ step: "0.01", min: "0" }}
             />
-            {errors.amount && (
-              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.amount}</p>
-            )}
           </div>
           <div className="">
-            <label
-              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-              htmlFor="category"
-            >
-              Category
-            </label>
-            <select
-              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
-                errors.category 
-                  ? "border-red-500 dark:border-red-400" 
-                  : "border-gray-300 dark:border-gray-600"
-              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 px-3 h-10`}
-              id="category"
+            <FormField
+              label="Category"
               name="category"
+              type="select"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              error={errors.category}
+              placeholder="Select a category"
+              options={EXPENSE_CATEGORIES}
               required
-            >
-              <option value="">Select a category</option>
-              {EXPENSE_CATEGORIES.map((cat) => (
-                <option key={cat.value} value={cat.value}>
-                  {cat.label}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.category}</p>
-            )}
+            />
           </div>
           <div className="">
-            <label
-              className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-              htmlFor="date"
-            >
-              Date
-            </label>
-            <input
-              className={`w-full bg-gray-50 dark:bg-gray-700 border ${
-                errors.date 
-                  ? "border-red-500 dark:border-red-400" 
-                  : "border-gray-300 dark:border-gray-600"
-              } rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-900 dark:text-gray-100 px-3 h-10`}
-              id="date"
+            <FormField
+              label="Date"
               name="date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
+              error={errors.date}
               required
             />
-            {errors.date && (
-              <p className="text-red-600 dark:text-red-400 text-xs mt-1">{errors.date}</p>
-            )}
           </div>
         </div>
         <div className="flex justify-end mt-6">
@@ -212,10 +152,7 @@ export default function AddExpense({ onSuccess }) {
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <Spinner size="sm" />
                 Adding...
               </>
             ) : (
