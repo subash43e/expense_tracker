@@ -4,9 +4,6 @@ import { validateCsrfToken } from "@/lib/security/csrf";
 import { upsertBudget } from "@/lib/budgets";
 import { createBudgetSchema } from "@/lib/validations";
 
-/**
- * POST handler to create or update a budget.
- */
 export async function handleUpsertBudget(request) {
   return handleApi(
     async () => {

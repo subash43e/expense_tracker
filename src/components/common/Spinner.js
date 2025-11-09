@@ -1,13 +1,6 @@
 import PropTypes from "prop-types";
 
-/**
- * Unified loading spinner component
- * @param {string} size - 'sm', 'md', 'lg' (default: 'md')
- * @param {string} variant - 'inline' (for buttons) or 'fullscreen' (default: 'inline')
- * @param {string} color - Color variant (default: 'white')
- */
 export default function Spinner({ size = "md", variant = "inline", color = "white" }) {
-  // SVG spinner (for buttons and inline use)
   if (variant === "inline") {
     const sizeClasses = {
       sm: "h-4 w-4",
@@ -46,7 +39,6 @@ export default function Spinner({ size = "md", variant = "inline", color = "whit
     );
   }
 
-  // Fullscreen spinner (for page loading)
   if (variant === "fullscreen") {
     const colorClasses = {
       indigo: "border-indigo-600 dark:border-indigo-400",

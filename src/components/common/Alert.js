@@ -1,11 +1,5 @@
 import PropTypes from "prop-types";
 
-/**
- * Reusable alert/message component for success and error messages
- * @param {string} type - 'success' or 'error'
- * @param {string} message - The message to display
- * @param {boolean} showIcon - Whether to show an icon (default: false)
- */
 export default function Alert({ type = "success", message, showIcon = false }) {
   if (!message) return null;
 

@@ -21,7 +21,6 @@ export default function LoginForm() {
   const [fieldErrors, setFieldErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
       router.push("/");
@@ -83,7 +82,6 @@ export default function LoginForm() {
 
   const isFormValid = loginSchema.safeParse({ email, password }).success;
 
-  // Show loading while checking authentication
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -95,7 +93,6 @@ export default function LoginForm() {
     );
   }
 
-  // Don't render the form if already authenticated (will redirect)
   if (isAuthenticated) {
     return null;
   }
@@ -115,7 +112,7 @@ export default function LoginForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email Field */}
+          
           <div>
             <label
               htmlFor="email"
@@ -156,7 +153,6 @@ export default function LoginForm() {
             )}
           </div>
 
-          {/* Password Field */}
           <div>
             <label
               htmlFor="password"
@@ -197,7 +193,6 @@ export default function LoginForm() {
             )}
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading || !isFormValid}
@@ -208,7 +203,6 @@ export default function LoginForm() {
           </button>
         </form>
 
-        {/* Register Link */}
         <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
           Don&apos;t have an account?{" "}
           <Link

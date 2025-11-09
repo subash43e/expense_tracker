@@ -7,7 +7,6 @@ import ErrorBoundary from '@/components/common/ErrorBoundary';
 export default function LayoutWrapper({ children }) {
   const { isAuthenticated, loading } = useAuth();
 
-  // Show default layout only for authenticated users
   if (isAuthenticated && !loading) {
     return (
       <ErrorBoundary>
@@ -26,7 +25,6 @@ export default function LayoutWrapper({ children }) {
     );
   }
 
-  // For unauthenticated users or during loading, show full-width layout
   return (
     <ErrorBoundary>
       <div className='w-full'>

@@ -21,21 +21,21 @@ import {
 } from "recharts";
 
 const COLORS = [
-  "#6366f1", // Indigo
-  "#8b5cf6", // Violet
-  "#ec4899", // Pink
-  "#f59e0b", // Amber
-  "#10b981", // Emerald
-  "#3b82f6", // Blue
-  "#ef4444", // Red
-  "#14b8a6", // Teal
+  "#6366f1",
+  "#8b5cf6",
+  "#ec4899",
+  "#f59e0b",
+  "#10b981",
+  "#3b82f6",
+  "#ef4444",
+  "#14b8a6",
 ];
 
 export default function Analytics() {
   const { currency } = useBudget();
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState("month"); // month, year, all
+  const [selectedPeriod, setSelectedPeriod] = useState("month");
 
   useEffect(() => {
     fetchExpenses();
@@ -54,7 +54,6 @@ export default function Analytics() {
     }
   };
 
-  // Filter expenses based on selected period
   const filteredExpenses = useMemo(() => {
     const now = new Date();
     const currentMonth = now.getMonth();
@@ -70,11 +69,10 @@ export default function Analytics() {
       } else if (selectedPeriod === "year") {
         return expenseDate.getFullYear() === currentYear;
       }
-      return true; // all
+      return true;
     });
   }, [expenses, selectedPeriod]);
 
-  // Calculate category breakdown
   const categoryData = useMemo(() => {
     const categoryTotals = {};
     filteredExpenses.forEach((expense) => {
@@ -87,13 +85,11 @@ export default function Analytics() {
       .sort((a, b) => b.value - a.value);
   }, [filteredExpenses]);
 
-  // Calculate monthly trends (for year view)
   const monthlyTrends = useMemo(() => {
     const monthlyTotals = {};
     const now = new Date();
     const currentYear = now.getFullYear();
 
-    // Initialize all months
     for (let i = 0; i < 12; i++) {
       const monthName = new Date(currentYear, i).toLocaleDateString("en-US", {
         month: "short",
@@ -101,7 +97,6 @@ export default function Analytics() {
       monthlyTotals[monthName] = 0;
     }
 
-    // Calculate totals
     expenses
       .filter((expense) => new Date(expense.date).getFullYear() === currentYear)
       .forEach((expense) => {
@@ -117,7 +112,6 @@ export default function Analytics() {
     }));
   }, [expenses]);
 
-  // Calculate daily spending (for month view)
   const dailySpending = useMemo(() => {
     const dailyTotals = {};
     const now = new Date();
@@ -125,12 +119,10 @@ export default function Analytics() {
     const currentYear = now.getFullYear();
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-    // Initialize all days
     for (let i = 1; i <= daysInMonth; i++) {
       dailyTotals[i] = 0;
     }
 
-    // Calculate totals
     filteredExpenses.forEach((expense) => {
       const day = new Date(expense.date).getDate();
       dailyTotals[day] += expense.amount;
@@ -142,7 +134,6 @@ export default function Analytics() {
     }));
   }, [filteredExpenses]);
 
-  // Calculate statistics
   const stats = useMemo(() => {
     const total = filteredExpenses.reduce((sum, exp) => sum + exp.amount, 0);
     const average = filteredExpenses.length > 0 ? total / filteredExpenses.length : 0;
@@ -170,7 +161,7 @@ export default function Analytics() {
 
   return (
     <div className="space-y-6">
-      {/* Period Selector and Export */}
+      
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
         <div className="flex justify-between items-center gap-4 flex-wrap">
           <div className="flex gap-2">
@@ -212,7 +203,6 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-4">
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Total Spent</p>
@@ -246,9 +236,8 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Spending Trend Chart */}
+        
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             {selectedPeriod === "month" ? "Daily Spending" : "Monthly Trend"}
@@ -282,7 +271,6 @@ export default function Analytics() {
           </ResponsiveContainer>
         </div>
 
-        {/* Category Breakdown Pie Chart */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-6">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Category Breakdown
@@ -316,7 +304,6 @@ export default function Analytics() {
           </ResponsiveContainer>
         </div>
 
-        {/* Category Spending Bar Chart */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-slate-300 p-6 lg:col-span-2">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Spending by Category

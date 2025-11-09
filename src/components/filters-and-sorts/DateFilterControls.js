@@ -22,14 +22,14 @@ export default function DateFilterControls({
   return (
     <div className="flex gap-2 flex-wrap">
       {" "}
-      {/* Removed 'p-4' */}
+      
       <select
         value={filterYear}
         onChange={handleYearChange}
         className="p-2 border rounded text-black dark:bg-black dark:text-white"
       >
         <option value="">All Years</option>
-        {/* Generate years dynamically (e.g., last 5 years) */}
+        
         {Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i).map(
           (year) => (
             <option key={year} value={year}>

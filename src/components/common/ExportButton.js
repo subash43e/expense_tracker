@@ -1,17 +1,14 @@
 "use client";
 import PropTypes from "prop-types";
 
-// Export to CSV
 export const exportToCSV = (expenses, filename = "expenses.csv") => {
   if (!expenses || expenses.length === 0) {
     alert("No expenses to export");
     return;
   }
 
-  // Define CSV headers
   const headers = ["Date", "Description", "Category", "Amount"];
   
-  // Convert expenses to CSV rows
   const rows = expenses.map((expense) => {
     const date = new Date(expense.date).toLocaleDateString();
     const description = `"${expense.description.replace(/"/g, '""')}"`;
@@ -20,10 +17,8 @@ export const exportToCSV = (expenses, filename = "expenses.csv") => {
     return [date, description, category, amount].join(",");
   });
 
-  // Combine headers and rows
   const csv = [headers.join(","), ...rows].join("\n");
 
-  // Create blob and download
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   const url = URL.createObjectURL(blob);
@@ -36,7 +31,6 @@ export const exportToCSV = (expenses, filename = "expenses.csv") => {
   document.body.removeChild(link);
 };
 
-// Export to JSON
 export const exportToJSON = (expenses, filename = "expenses.json") => {
   if (!expenses || expenses.length === 0) {
     alert("No expenses to export");
@@ -56,7 +50,6 @@ export const exportToJSON = (expenses, filename = "expenses.json") => {
   document.body.removeChild(link);
 };
 
-// Export Button Component
 export default function ExportButton({ expenses, variant = "csv" }) {
   const handleExport = () => {
     const timestamp = new Date().toISOString().split("T")[0];

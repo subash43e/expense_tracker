@@ -15,10 +15,8 @@ export default function DeleteConfirmModal({
 
   useEffect(() => {
     if (isOpen) {
-      // Focus the confirm button when modal opens
       confirmButtonRef.current?.focus();
       
-      // Prevent body scroll
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -62,7 +60,7 @@ export default function DeleteConfirmModal({
           className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6"
           onClick={(e) => e.stopPropagation()}
         >
-        {/* Icon */}
+        
         <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full">
           <svg 
             className="w-6 h-6 text-red-600 dark:text-red-400" 
@@ -79,7 +77,6 @@ export default function DeleteConfirmModal({
           </svg>
         </div>
 
-        {/* Title */}
         <h3 
           id="modal-title"
           className="text-lg font-semibold text-center text-gray-900 dark:text-white mb-2"
@@ -87,7 +84,6 @@ export default function DeleteConfirmModal({
           Delete Expense
         </h3>
 
-        {/* Message */}
         <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
           Are you sure you want to delete{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -96,7 +92,6 @@ export default function DeleteConfirmModal({
           ? This action cannot be undone.
         </p>
 
-        {/* Buttons */}
         <div className="flex gap-3">
           <button
             onClick={onClose}

@@ -62,9 +62,6 @@ const dateSchema = z
     message: "Invalid date",
   });
 
-/**
- * Validation schema for creating an expense.
- */
 export const createExpenseSchema = z.object({
   description: z
     .string()
@@ -80,9 +77,6 @@ export const createExpenseSchema = z.object({
   date: dateSchema,
 });
 
-/**
- * Validation schema for updating an expense.
- */
 export const updateExpenseSchema = z.object({
   description: z
     .string()
@@ -100,9 +94,6 @@ export const updateExpenseSchema = z.object({
   date: dateSchema.optional(),
 });
 
-/**
- * Validation schema for query parameters.
- */
 export const expenseQuerySchema = z.object({
   page: z.number().int().positive().optional(),
   limit: z.number().int().positive().optional(),
@@ -111,16 +102,10 @@ export const expenseQuerySchema = z.object({
   category: z.string().optional(),
 });
 
-/**
- * Validation schema for MongoDB ObjectId.
- */
 export const objectIdSchema = z
   .string()
   .regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid ObjectId format" });
 
-/**
- * Validation schema for user registration.
- */
 export const registerSchema = z.object({
   email: z
     .string()
@@ -146,9 +131,6 @@ export const registerFormSchema = registerSchema
     }
   });
 
-/**
- * Validation schema for user login.
- */
 export const loginSchema = z.object({
   email: z
     .string()
@@ -158,9 +140,6 @@ export const loginSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-/**
- * Validation schema for creating a budget.
- */
 export const createBudgetSchema = z.object({
   monthlyLimit: z
     .union([
@@ -185,9 +164,6 @@ export const createBudgetSchema = z.object({
     .default("USD"),
 });
 
-/**
- * Validation schema for updating a budget.
- */
 export const updateBudgetSchema = z.object({
   monthlyLimit: z
     .union([
@@ -216,9 +192,6 @@ export const updateBudgetSchema = z.object({
     .optional(),
 });
 
-/**
- * Extracts a map of field errors from a Zod error object.
- */
 export const formatZodErrors = (error) => {
   return error.issues.reduce((acc, issue) => {
     const [path] = issue.path;
@@ -229,9 +202,6 @@ export const formatZodErrors = (error) => {
   }, {});
 };
 
-/**
- * Derives password strength metadata for UI feedback.
- */
 export const evaluatePasswordStrength = (password) => {
   const value = password || "";
   const requirements = Object.entries(passwordRuleConfig).reduce(

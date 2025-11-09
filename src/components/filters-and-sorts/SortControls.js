@@ -24,7 +24,7 @@ export default function SortControls({
 
         {showSortModal && (
           <>
-            {/* Backdrop for better UX */}
+            
             <div
               className="fixed inset-0 bg-black/50 z-40"
               aria-hidden="true"

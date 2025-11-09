@@ -11,10 +11,8 @@ export async function handleCreateExpense(request) {
 
     const body = await request.json();
     
-    // Validate request body
     const validatedData = createExpenseSchema.parse(body);
     
-    // Add userId to the expense data
     const expenseData = { ...validatedData, userId };
     
     const expense = await createExpense(expenseData);

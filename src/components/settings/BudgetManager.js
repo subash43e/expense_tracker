@@ -27,7 +27,6 @@ export default function BudgetManager() {
     }
   }, [message]);
 
-
   const fetchBudget = async () => {
     try {
       const res = await authFetch("/api/budgets");
@@ -39,7 +38,7 @@ export default function BudgetManager() {
         setCurrency(data.budget.currency || "USD");
       } else {
         setBudget(null);
-        setIsEditing(true); // Show form if no budget exists
+        setIsEditing(true);
       }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to load budget" });
@@ -47,7 +46,6 @@ export default function BudgetManager() {
       setIsLoading(false);
     }
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,7 +81,6 @@ export default function BudgetManager() {
         setIsEditing(false);
         setMessage({ type: "success", text: data.message });
         
-        // Trigger a custom event to notify BudgetProgress component
         window.dispatchEvent(new Event("budgetUpdated"));
       } else {
         setMessage({ type: "error", text: data.error || "Failed to save budget" });
@@ -116,7 +113,6 @@ export default function BudgetManager() {
         setIsEditing(true);
         setMessage({ type: "success", text: data.message });
         
-        // Trigger event to notify BudgetProgress component
         window.dispatchEvent(new Event("budgetUpdated"));
       } else {
         setMessage({ type: "error", text: data.error || "Failed to delete budget" });

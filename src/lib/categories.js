@@ -1,4 +1,3 @@
-// Predefined expense categories
 export const EXPENSE_CATEGORIES = [
   { value: "Food", label: "🍔 Food & Dining", icon: "🍔" },
   { value: "Transportation", label: "🚗 Transportation", icon: "🚗" },
@@ -17,22 +16,12 @@ export const EXPENSE_CATEGORIES = [
   { value: "Other", label: "📦 Other", icon: "📦" },
 ];
 
-/**
- * Get the icon for a given category value.
- * @param {string} categoryValue - The value of the category.
- * @returns {string} - The icon associated with the category, or a default icon.
- */
 export const getCategoryIcon = (categoryValue) => {
   return (
     EXPENSE_CATEGORIES.find((cat) => cat.value === categoryValue)?.icon || "📦"
   );
 };
 
-/**
- * Get the label for a given category value.
- * @param {string} categoryValue - The value of the category.
- * @returns {string} - The label associated with the category, or the category value itself.
- */
 export const getCategoryLabel = (categoryValue) => {
   return (
     EXPENSE_CATEGORIES.find((cat) => cat.value === categoryValue)?.label ||

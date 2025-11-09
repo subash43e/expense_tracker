@@ -29,7 +29,6 @@ export default function RegisterForm() {
     evaluatePasswordStrength("")
   );
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
       router.push("/");
@@ -143,7 +142,6 @@ export default function RegisterForm() {
     return "Strong";
   };
 
-  // Show loading while checking authentication
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -155,7 +153,6 @@ export default function RegisterForm() {
     );
   }
 
-  // Don't render the form if already authenticated (will redirect)
   if (isAuthenticated) {
     return null;
   }
@@ -175,7 +172,7 @@ export default function RegisterForm() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email Field */}
+          
           <div>
             <label
               htmlFor="email"
@@ -216,7 +213,6 @@ export default function RegisterForm() {
             )}
           </div>
 
-          {/* Password Field */}
           <div>
             <label
               htmlFor="password"
@@ -251,7 +247,6 @@ export default function RegisterForm() {
               )}
             </div>
 
-            {/* Password Strength Indicator */}
             {password && (
               <div className="mt-3 space-y-2">
                 <div className="flex justify-between items-center">
@@ -294,7 +289,6 @@ export default function RegisterForm() {
             )}
           </div>
 
-          {/* Confirm Password Field */}
           <div>
             <label
               htmlFor="confirmPassword"
@@ -337,7 +331,6 @@ export default function RegisterForm() {
             )}
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading || !isFormValid}
@@ -348,7 +341,6 @@ export default function RegisterForm() {
           </button>
         </form>
 
-        {/* Login Link */}
         <p className="text-center text-gray-600 dark:text-gray-400 mt-6">
           Already have an account?{" "}
           <Link

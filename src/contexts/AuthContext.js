@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // React Compiler automatically memoizes these functions - no manual useCallback needed
   const clearError = () => setError(null);
 
   const validateToken = async () => {
@@ -43,7 +42,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Check token on mount
   useEffect(() => {
     let mounted = true;
 

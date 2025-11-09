@@ -47,7 +47,7 @@ export default function FeaturesSection({
   return (
     <section id="features" className="bg-gray-50 dark:bg-gray-800 px-4 md:px-8 lg:px-16 py-12 md:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
+        
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             {sectionTitle}
@@ -57,7 +57,6 @@ export default function FeaturesSection({
           </p>
         </div>
 
-        {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
@@ -66,17 +65,15 @@ export default function FeaturesSection({
                 key={index}
                 className="bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-6 hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-300"
               >
-                {/* Icon */}
+                
                 <div className="mb-4">
                   <IconComponent className="w-12 h-12 text-indigo-600 dark:text-indigo-400" />
                 </div>
 
-                {/* Title */}
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                   {feature.title}
                 </h3>
 
-                {/* Description */}
                 <p className="text-gray-600 dark:text-gray-300">
                   {feature.description}
                 </p>
@@ -85,7 +82,6 @@ export default function FeaturesSection({
           })}
         </div>
 
-        {/* Optional CTA */}
         {showCTA && (
           <div className="text-center">
             <Link href="/register">

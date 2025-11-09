@@ -30,7 +30,6 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
   useEffect(() => {
     fetchBudget();
 
-    // Listen for budget updates
     const handleBudgetUpdate = () => {
       fetchBudget();
     };
@@ -187,7 +186,7 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
 
   return (
     <div className="space-y-4">
-      {/* Budget Alert Notification */}
+      
       {shouldShowNotification && !dismissedNotification && (
         <div
           className={`p-4 rounded-lg border-l-4 ${
@@ -253,12 +252,11 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
         </div>
       )}
 
-      {/* Budget Progress Card */}
       <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
         <div className="flex items-center mb-4 justify-center">
           <div className="flex items-center mb-4 mx-auto">
             <div className="mr-3">
-              {/* Star Icon */}
+              
               <svg
                 className={`w-8 h-8 ${
                   isOverBudget ? "text-red-500" : "text-green-500"

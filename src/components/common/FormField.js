@@ -1,19 +1,5 @@
 import PropTypes from "prop-types";
 
-/**
- * Reusable form field component with label, input/select/textarea, and error display
- * @param {string} label - Field label
- * @param {string} name - Field name and id
- * @param {string} type - Input type or 'select' or 'textarea'
- * @param {string} value - Field value
- * @param {function} onChange - Change handler
- * @param {string} error - Error message
- * @param {string} placeholder - Placeholder text
- * @param {array} options - Options for select (array of {value, label})
- * @param {boolean} required - Whether field is required
- * @param {string} variant - 'compact' or 'spacious' (default: 'compact')
- * @param {object} inputProps - Additional props to pass to input element
- */
 export default function FormField({
   label,
   name,

@@ -73,7 +73,6 @@ export default function Sidebar() {
         </Link>
       </nav>
 
-      {/* User Profile Section */}
       {isAuthenticated && user && (
         <div className="border-t border-gray-200 dark:border-gray-700 p-4 space-y-3">
           <div className="px-4 py-3 bg-indigo-50 dark:bg-indigo-900 rounded-lg">
@@ -91,7 +90,6 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Auth Links for Unauthenticated Users */}
       {!isAuthenticated && (
         <div className="border-t border-gray-200 dark:border-gray-700 p-4 space-y-2">
           <Link

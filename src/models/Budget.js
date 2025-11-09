@@ -6,7 +6,7 @@ const budgetSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true, // One budget per user
+      unique: true,
     },
     monthlyLimit: {
       type: Number,

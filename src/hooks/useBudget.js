@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { authFetch } from "@/lib/authFetch";
 
-/**
- * Custom hook to fetch and manage budget data including currency
- * @returns {Object} - Budget data, currency, loading state, and refresh function
- */
 export default function useBudget() {
   const [budget, setBudget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,7 +30,6 @@ export default function useBudget() {
   useEffect(() => {
     fetchBudget();
 
-    // Listen for budget updates
     const handleBudgetUpdate = () => {
       fetchBudget();
     };

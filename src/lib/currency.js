@@ -1,5 +1,4 @@
 
-
 export const CURRENCY_SYMBOLS = {
   USD: "$",
   EUR: "€",
@@ -20,11 +19,9 @@ export const CURRENCY_NAMES = {
   INR: "Indian Rupee",
 };
 
-
 export function getCurrencySymbol(currencyCode = "USD") {
   return CURRENCY_SYMBOLS[currencyCode] || "$";
 }
-
 
 export function formatCurrency(amount, currencyCode = "USD", includeDecimals = true) {
   const symbol = getCurrencySymbol(currencyCode);

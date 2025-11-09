@@ -6,11 +6,6 @@ if (!process.env.JWT_SECRET) {
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
-/**
- * Extract and verify user ID from authorization header
- * @param {Request} request - Next.js request object
- * @returns {string|null} - User ID if valid token, null otherwise
- */
 export function getUserIdFromRequest(request) {
   try {
     const authHeader = request.headers.get('Authorization');
@@ -27,11 +22,6 @@ export function getUserIdFromRequest(request) {
   }
 }
 
-/**
- * Middleware to check if user is authenticated
- * @param {Request} request - Next.js request object
- * @returns {Object} - { userId, error } object
- */
 export function requireAuth(request) {
   const userId = getUserIdFromRequest(request);
   

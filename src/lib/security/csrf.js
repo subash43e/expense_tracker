@@ -26,8 +26,6 @@ export function setCsrfCookie(response, token) {
 export function validateCsrfToken(request) {
   const headerToken = request.headers.get(CSRF_HEADER_NAME) ?? "";
   let cookieToken = "";
-  // In Next.js route handlers the request may carry cookies on the request object
-  // (RequestCookies) with .get(), otherwise fall back to the next/headers cookies().
   try {
     if (request && request.cookies && typeof request.cookies.get === "function") {
       cookieToken = request.cookies.get(CSRF_COOKIE_NAME)?.value ?? "";
@@ -35,7 +33,6 @@ export function validateCsrfToken(request) {
       cookieToken = cookies().get(CSRF_COOKIE_NAME)?.value ?? "";
     }
   } catch (err) {
-    // If cookie access fails, treat as missing token
     cookieToken = "";
   }
 

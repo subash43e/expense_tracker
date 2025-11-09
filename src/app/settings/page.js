@@ -22,7 +22,6 @@ export default function SettingsPage() {
             </p>
           </div>
 
-          {/* Appearance Section */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -43,10 +42,8 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Budget Management Section */}
           <BudgetManager />
 
-          {/* Additional Settings Sections */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 mb-6 mt-6">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
@@ -91,7 +88,6 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Data Management Section */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700">
             <div className="p-6">
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">

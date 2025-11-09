@@ -18,7 +18,6 @@ export default function DarkModeToggle() {
       title={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDark ? (
-        // Sun icon for light mode
         <svg
           className="w-5 h-5 text-yellow-500"
           fill="none"
@@ -33,7 +32,6 @@ export default function DarkModeToggle() {
           />
         </svg>
       ) : (
-        // Moon icon for dark mode
         <svg
           className="w-5 h-5 text-gray-700"
           fill="none"

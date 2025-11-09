@@ -46,7 +46,6 @@ export default function ExpenseFilters({
         </div>
       </div>
 
-      {/* Search Input */}
       <div className="relative">
         <input
           type="text"

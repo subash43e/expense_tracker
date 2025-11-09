@@ -3,9 +3,6 @@ import { ZodError } from "zod";
 import { requireAuth } from "@/lib/auth";
 import { objectIdSchema } from "@/lib/validations";
 
-/**
- * Custom error class to standardize API error responses.
- */
 export class ApiError extends Error {
   constructor(status, message, details = null) {
     super(message);
@@ -14,10 +11,6 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Ensures the incoming request is authenticated and returns the user id.
- * Throws an ApiError if authentication fails.
- */
 export function ensureAuthenticated(request) {
   const { userId, error } = requireAuth(request);
   if (error) {
@@ -26,9 +19,6 @@ export function ensureAuthenticated(request) {
   return userId;
 }
 
-/**
- * Resolves dynamic route params and validates the ObjectId value.
- */
 export async function resolveAndValidateObjectId(params) {
   const resolvedParams = await Promise.resolve(params);
   const id = resolvedParams?.id;
@@ -36,9 +26,6 @@ export async function resolveAndValidateObjectId(params) {
   return id;
 }
 
-/**
- * Wraps an API handler to provide consistent error handling.
- */
 export async function handleApi(handler, { logMessage } = {}) {
   try {
     return await handler();

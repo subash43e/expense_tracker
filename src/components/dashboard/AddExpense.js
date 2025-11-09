@@ -65,10 +65,9 @@ export default function AddExpense({ onSuccess }) {
         setDescription("");
         setAmount("");
         setCategory("");
-        setDate(new Date().toISOString().split("T")[0]); // Reset to today
+        setDate(new Date().toISOString().split("T")[0]);
         setErrors({});
         
-        // Call success callback to refresh expense list
         if (onSuccess) {
           await onSuccess();
         }

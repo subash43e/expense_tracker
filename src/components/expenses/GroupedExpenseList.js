@@ -8,7 +8,6 @@ import { getCategoryIcon } from "@/lib/categories";
 import useBudget from "@/hooks/useBudget";
 import { formatCurrency } from "@/lib/currency";
 
-// Helper function to get time period
 const getTimePeriod = (date) => {
   const expenseDate = new Date(date);
   const today = new Date();
@@ -21,7 +20,6 @@ const getTimePeriod = (date) => {
   if (expenseDate >= startOfThisWeek) {
     return "This Week";
   } else {
-    // Return month and year for all other expenses
     const monthYear = expenseDate.toLocaleDateString("en-US", { 
       month: "long", 
       year: "numeric" 
@@ -30,7 +28,6 @@ const getTimePeriod = (date) => {
   }
 };
 
-// Group expenses by time period
 const groupExpensesByPeriod = (expenses) => {
   const grouped = {};
 
@@ -42,20 +39,17 @@ const groupExpensesByPeriod = (expenses) => {
     grouped[period].push(expense);
   });
 
-  // Sort groups by date (most recent first)
   const sortedGroups = Object.entries(grouped).sort((a, b) => {
     const [periodA] = a;
     const [periodB] = b;
     
-    // "This Week" always comes first
     if (periodA === "This Week") return -1;
     if (periodB === "This Week") return 1;
     
-    // Parse dates for month/year groups
     const dateA = new Date(periodA);
     const dateB = new Date(periodB);
     
-    return dateB - dateA; // Most recent first
+    return dateB - dateA;
   });
 
   return sortedGroups;
@@ -71,13 +65,11 @@ export default function GroupedExpenseList({
     [expensesToDisplay]
   );
 
-  // Calculate total expenses
   const totalAmount = useMemo(
     () => expensesToDisplay.reduce((sum, expense) => sum + parseFloat(expense.amount || 0), 0),
     [expensesToDisplay]
   );
 
-  // Track which month sections are expanded
   const [expandedMonths, setExpandedMonths] = useState({});
 
   const toggleMonth = (month) => {
@@ -87,7 +79,6 @@ export default function GroupedExpenseList({
     }));
   };
 
-  // Check if a period is collapsible (month/year groups)
   const isCollapsible = (period) => period !== "This Week";
 
   return (
@@ -98,7 +89,7 @@ export default function GroupedExpenseList({
         </li>
       ) : (
         <>
-          {/* Total Expenses Summary */}
+          
           <div className="bg-linear-to-r from-indigo-500 to-purple-600 dark:from-indigo-600 dark:to-purple-700 p-6 rounded-lg shadow-lg mb-6">
             <div className="flex items-center justify-between">
               <div>
@@ -120,10 +111,9 @@ export default function GroupedExpenseList({
             </div>
           </div>
 
-          {/* Grouped Expenses */}
           {groupedExpenses.map(([period, expenses], index) => (
           <div key={period} className={`${index > 0 ? 'mt-6' : ''}`}>
-            {/* Period Header */}
+            
             <button
               onClick={() => isCollapsible(period) && toggleMonth(period)}
               disabled={!isCollapsible(period)}
@@ -150,7 +140,6 @@ export default function GroupedExpenseList({
               </h3>
             </button>
 
-            {/* Expenses in this period - hide if month is collapsed */}
             {(!isCollapsible(period) || expandedMonths[period]) && (
               <ul className="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800/50 rounded-b-lg shadow-sm border-x border-b border-gray-200 dark:border-gray-700">
                 {expenses.map((expense, expenseIndex) => (

@@ -2,9 +2,6 @@ import { NextResponse } from "next/server";
 import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
 import { getBudgetByUserId } from "@/lib/budgets";
 
-/**
- * GET handler to retrieve the user's budget.
- */
 export async function handleGetBudget(request) {
   return handleApi(
     async () => {

@@ -1,17 +1,6 @@
 import dbConnect from "@/lib/db";
 import Expense from "@/models/Expense";
 
-/**
- * Fetch all expenses with pagination, sorting, and filtering options.
- * @param {Object} options - Query options.
- * @param {string} options.userId - User ID to filter expenses by.
- * @param {number} [options.page=1] - Page number for pagination.
- * @param {number} [options.limit=100] - Number of items per page.
- * @param {string} [options.sortBy="date"] - Field to sort by.
- * @param {string} [options.sortOrder="desc"] - Sort order ("asc" or "desc").
- * @param {string|null} [options.category=null] - Filter by category.
- * @returns {Promise<Object>} - Paginated expenses and metadata.
- */
 export async function getAllExpenses(options = {}) {
   await dbConnect();
 
@@ -53,11 +42,6 @@ export async function getAllExpenses(options = {}) {
   };
 }
 
-/**
- * Fetch all expenses without pagination.
- * @param {string} userId - User ID to filter expenses by.
- * @returns {Promise<Array>} - List of all expenses.
- */
 export async function getAllExpensesSimple(userId) {
   await dbConnect();
   if (!userId) {
@@ -98,11 +82,6 @@ export async function deleteExpense(id, userId) {
   return Expense.findOneAndDelete({ _id: id, userId });
 }
 
-/**
- * Delete all expenses for a user
- * @param {string} userId - User ID
- * @returns {Promise<Object>} - Deletion result
- */
 export async function deleteAllExpenses(userId) {
   await dbConnect();
   if (!userId) {

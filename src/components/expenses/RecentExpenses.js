@@ -45,12 +45,10 @@ export default function RecentExpenses({
   const pathname = usePathname();
   const { toast } = useToast();
 
-  // Normalize expenses array with useMemo to stabilize reference
   const expensesList = useMemo(() => {
     return Array.isArray(expenses) ? expenses : [];
   }, [expenses]);
 
-  // Close modal on ESC key press - ACCESSIBILITY WIN!
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === "Escape") {
@@ -83,14 +81,12 @@ export default function RecentExpenses({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showFilterModal, showSortModal, filterModalRef, sortModalRef, setShowFilterModal, setShowSortModal]);
 
-  // Open delete confirmation modal
   const handleDelete = (id) => {
     const expense = expensesList.find((exp) => exp._id === id);
     setExpenseToDelete(expense);
     setDeleteModalOpen(true);
   };
 
-  // Perform actual deletion
   const confirmDelete = async () => {
     if (!expenseToDelete) return;
 
@@ -100,11 +96,9 @@ export default function RecentExpenses({
     try {
       setIsDeleting(true);
       
-      // Optimistically update UI immediately
       setExpenses((prev) => prev.filter((expense) => expense._id !== id));
       setDeleteModalOpen(false);
 
-      // Ensure id is a string
       const expenseId = typeof id === 'object' ? id.toString() : id;
       
       const res = await authFetch(`/api/expenses/${expenseId}`, { method: "DELETE" });
@@ -118,14 +112,13 @@ export default function RecentExpenses({
         await onRefreshNeeded();
       }
     } catch (err) {
-      // Rollback on error
       console.error("Failed to delete expense:", err);
       setExpenses(previousExpenses);
       toast({
         title: "Error",
         description: `Failed to delete expense: ${err.message}`,
         variant: "destructive",
-        duration: 5000, // Auto-hide after 5 seconds
+        duration: 5000,
       });
     } finally {
       setIsDeleting(false);
@@ -133,11 +126,9 @@ export default function RecentExpenses({
     }
   };
 
-  // CRITICAL FIX: Wrap in useCallback to prevent unnecessary recalculations
   const getFilteredExpenses = useCallback(() => {
   let filtered = expensesList;
 
-    // Search filter - check description, category, and amount
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter((expense) => {
@@ -153,7 +144,6 @@ export default function RecentExpenses({
       });
     }
 
-    // Date filters
     if (filterDate.filterYear) {
       filtered = filtered.filter((expense) => {
         const expenseDate = new Date(expense.date);
@@ -266,7 +256,7 @@ export default function RecentExpenses({
 
   return (
     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-50 border border-gray-200 dark:border-gray-600 rounded-lg flex flex-col shadow-sm">
-      {/* Export buttons for /expenses page */}
+      
       {pathname === "/expenses" && (
         <div className="flex justify-end gap-3 mb-4">
           <ExportButton expenses={expenses} variant="csv" />
@@ -311,7 +301,6 @@ export default function RecentExpenses({
         </ul>
       )}
 
-      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
         isOpen={deleteModalOpen}
         onClose={() => {

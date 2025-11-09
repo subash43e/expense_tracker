@@ -1,9 +1,5 @@
 import mongoose from "mongoose";
 
-/**
- * Validate required environment variables.
- * Throws an error if any required variable is missing.
- */
 function validateEnvVariables() {
   const requiredVars = ["MONGODB_URI"];
   const missingVars = requiredVars.filter((key) => !process.env[key]);
@@ -17,21 +13,15 @@ function validateEnvVariables() {
   }
 }
 
-// Validate environment variables at startup
 validateEnvVariables();
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Cache the database connection to prevent multiple connections
 let cached = global.mongoose;
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-/**
- * Establish a connection to the MongoDB database.
- * @returns {Promise<mongoose.Connection>} - The established connection.
- */
 async function dbConnect() {
   if (cached.conn) {
     return cached.conn;

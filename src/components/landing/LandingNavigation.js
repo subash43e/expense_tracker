@@ -24,17 +24,16 @@ export default function LandingNavigation({
 
   return (
     <>
-      {/* Sticky Header */}
+      
       <header className="sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 h-16 flex items-center px-4 md:px-8 lg:px-16">
         <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
+          
           <Link href="/">
             <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer">
               {logoText}
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
             <a
               href="#features"
@@ -51,7 +50,6 @@ export default function LandingNavigation({
             )}
           </nav>
 
-          {/* Right Side - Desktop Auth Links */}
           <div className="hidden md:flex items-center gap-4">
             <Link href={signInLink}>
               <span className="text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-300 font-medium cursor-pointer">
@@ -65,7 +63,6 @@ export default function LandingNavigation({
             </Link>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={toggleMobileMenu}
             className="md:hidden flex items-center text-gray-700 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400"
@@ -80,7 +77,6 @@ export default function LandingNavigation({
         </div>
       </header>
 
-      {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 top-16 z-30 bg-white dark:bg-gray-800 md:hidden">
           <nav className="flex flex-col gap-4 p-6">
