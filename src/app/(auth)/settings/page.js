@@ -5,7 +5,7 @@ import { ProtectedRoute } from "@components/common/ProtectedRoute";
 import ExportButton from "@components/common/ExportButton";
 import BudgetManager from "./_components/BudgetManager";
 import useFetchExpenses from "@hooks/useFetchExpenses";
-import { authFetch } from "@lib/authFetch";
+import { deleteAllExpenses } from "../expenses/_actions/expenses";
 
 export default function SettingsPage() {
   const { expenses, loading } = useFetchExpenses();
@@ -125,10 +125,8 @@ export default function SettingsPage() {
                       )
                         return;
                       try {
-                        const res = await authFetch("/api/expenses/deleteAll", {
-                          method: "POST",
-                        });
-                        if (!res.ok) throw new Error("Failed to delete data");
+                        const result = await deleteAllExpenses();
+                        if (!result.success) throw new Error(result.error || "Failed to delete data");
                         alert("All your data has been deleted.");
                         window.location.reload();
                       } catch (err) {

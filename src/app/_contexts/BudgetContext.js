@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import { authFetch } from "@lib/authFetch";
+import { getBudget } from "@/app/(auth)/settings/_actions/budgets";
 
 const BudgetContext = createContext(null);
 
@@ -13,11 +13,10 @@ export function BudgetProvider({ children }) {
     try {
       setIsLoading(true);
       setError(null);
-      const res = await authFetch("/api/budgets");
-      const data = await res.json();
+      const result = await getBudget();
 
-      if (res.ok && data.budget) {
-        setBudget(data.budget);
+      if (result.success && result.budget) {
+        setBudget(result.budget);
       } else {
         setBudget(null);
       }

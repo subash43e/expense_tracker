@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@lib/categories";
-import { authFetch } from "@lib/authFetch";
+import { updateExpense } from "../_actions/expenses";
 import { createExpenseSchema, formatZodErrors } from "@lib/validations";
 import { useBudget } from "@contexts/BudgetContext"; 
 import { getCurrencySymbol } from "@lib/currency";
@@ -48,23 +48,15 @@ export default function EditExpense({ expense }) {
     setIsLoading(true);
 
     try {
-      const res = await authFetch(`/api/expenses/${expense._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validationResult.data),
-      });
+      const result = await updateExpense(expense._id, validationResult.data);
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (result.success) {
         setMessage({ type: "success", text: "Expense updated successfully!" });
         setTimeout(() => {
           router.push("/expenses");
         }, 1500);
       } else {
-        setMessage({ type: "error", text: data.error || "Something went wrong!" });
+        setMessage({ type: "error", text: result.error || "Something went wrong!" });
       }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to update expense. Please try again." });

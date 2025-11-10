@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import PropTypes from "prop-types";
-import FilterModal from "@components/filters/FilterModal";
-import SortControls from "@components/filters/SortControls";
+import FilterModal from "./filters/FilterModal";
+import SortControls from "./filters/SortControls";
 
 export default function ExpenseFilters({
   showFilterModal,

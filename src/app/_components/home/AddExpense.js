@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@lib/categories";
-import { authFetch } from "@lib/authFetch";
+import { createExpense } from "@/app/(auth)/expenses/_actions/expenses";
 import { createExpenseSchema, formatZodErrors } from "@lib/validations";
 import { useBudget } from "@contexts/BudgetContext";
 import { getCurrencySymbol } from "@lib/currency";
@@ -50,17 +50,9 @@ export default function AddExpense({ onSuccess }) {
     setIsLoading(true);
 
     try {
-      const res = await authFetch("/api/expenses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validationResult.data),
-      });
+      const result = await createExpense(validationResult.data);
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (result.success) {
         setMessage({ type: "success", text: "Expense added successfully!" });
         setDescription("");
         setAmount("");
@@ -72,7 +64,7 @@ export default function AddExpense({ onSuccess }) {
           await onSuccess();
         }
       } else {
-        setMessage({ type: "error", text: data.error || "Something went wrong!" });
+        setMessage({ type: "error", text: result.error || "Something went wrong!" });
       }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to add expense. Please try again." });

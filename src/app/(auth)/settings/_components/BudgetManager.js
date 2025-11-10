@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { authFetch } from "@lib/authFetch";
+import { getBudget, saveBudget, deleteBudget } from "../_actions/budgets";
 import { createBudgetSchema, formatZodErrors } from "@lib/validations";
 import { getCurrencySymbol } from "@lib/currency";
 import { useBudget } from "@contexts/BudgetContext";
@@ -29,13 +29,12 @@ export default function BudgetManager() {
 
   const fetchBudget = async () => {
     try {
-      const res = await authFetch("/api/budgets");
-      const data = await res.json();
+      const result = await getBudget();
 
-      if (res.ok && data.budget) {
-        setBudget(data.budget);
-        setMonthlyLimit(data.budget.monthlyLimit.toString());
-        setCurrency(data.budget.currency || "USD");
+      if (result.success && result.budget) {
+        setBudget(result.budget);
+        setMonthlyLimit(result.budget.monthlyLimit.toString());
+        setCurrency(result.budget.currency || "USD");
       } else {
         setBudget(null);
         setIsEditing(true);
@@ -66,24 +65,16 @@ export default function BudgetManager() {
     setIsSaving(true);
 
     try {
-      const res = await authFetch("/api/budgets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(validationResult.data),
-      });
+      const result = await saveBudget(validationResult.data);
 
-      const data = await res.json();
-
-      if (res.ok) {
-        setBudget(data.budget);
+      if (result.success) {
+        setBudget(result.budget);
         setIsEditing(false);
-        setMessage({ type: "success", text: data.message });
+        setMessage({ type: "success", text: result.message });
         
         refetchBudgetContext();
       } else {
-        setMessage({ type: "error", text: data.error || "Failed to save budget" });
+        setMessage({ type: "error", text: result.error || "Failed to save budget" });
       }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to save budget. Please try again." });
@@ -100,22 +91,18 @@ export default function BudgetManager() {
     setIsSaving(true);
 
     try {
-      const res = await authFetch("/api/budgets", {
-        method: "DELETE",
-      });
+      const result = await deleteBudget();
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (result.success) {
         setBudget(null);
         setMonthlyLimit("");
         setCurrency("USD");
         setIsEditing(true);
-        setMessage({ type: "success", text: data.message });
+        setMessage({ type: "success", text: result.message });
         
         refetchBudgetContext();
       } else {
-        setMessage({ type: "error", text: data.error || "Failed to delete budget" });
+        setMessage({ type: "error", text: result.error || "Failed to delete budget" });
       }
     } catch (error) {
       setMessage({ type: "error", text: "Failed to delete budget. Please try again." });

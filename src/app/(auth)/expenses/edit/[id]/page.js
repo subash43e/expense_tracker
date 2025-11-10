@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import EditExpenseModal from "../../_components/EditExpenseModal";
 import { ProtectedRoute } from "@components/common/ProtectedRoute";
-import { authFetch } from "@lib/authFetch";
+import { getExpenseById } from "../../_actions/expenses";
 
 export default function EditExpensePage({ params }) {
   const router = useRouter();
@@ -35,17 +35,14 @@ export default function EditExpensePage({ params }) {
 
     const fetchExpense = async () => {
       try {
-        const res = await authFetch(`/api/expenses/${resolvedId}`);
-        if (!res.ok) {
-          if (res.status === 404) {
-            setError("Expense not found");
-          } else {
-            setError("Failed to load expense");
-          }
+        const result = await getExpenseById(resolvedId);
+        
+        if (!result.success) {
+          setError(result.error || "Failed to load expense");
           return;
         }
-        const data = await res.json();
-        setExpense(data.data);
+        
+        setExpense(result.data);
         setError(null);
       } catch (err) {
         console.error("Failed to fetch expense:", err);

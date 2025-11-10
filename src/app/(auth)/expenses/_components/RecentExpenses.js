@@ -8,7 +8,7 @@ import ExpenseList from "./ExpenseList";
 import GroupedExpenseList from "./GroupedExpenseList";
 import DeleteConfirmModal from "@components/common/modals/DeleteConfirmModal";
 import ExportButton from "@components/common/ExportButton";
-import { authFetch } from "@lib/authFetch";
+import { deleteExpense } from "../_actions/expenses";
 import { useToast } from "@components/common/Toast";
 
 export default function RecentExpenses({
@@ -101,11 +101,12 @@ export default function RecentExpenses({
 
       const expenseId = typeof id === 'object' ? id.toString() : id;
       
-      const res = await authFetch(`/api/expenses/${expenseId}`, { method: "DELETE" });
-      const data = await res.json();
+      const result = await deleteExpense(expenseId);
       
-      if (!res.ok || !data.success) {
-        console.error(data.error || "Failed to delete expense");
+      if (!result.success) {
+        console.error(result.error || "Failed to delete expense");
+        // Rollback on error
+        setExpenses(previousExpenses);
       }
 
       if (onRefreshNeeded) {

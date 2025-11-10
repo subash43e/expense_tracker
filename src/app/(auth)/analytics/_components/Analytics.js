@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import ExportButton from "@components/common/ExportButton";
-import { authFetch } from "@lib/authFetch";
+import { getExpenses } from "../../expenses/_actions/expenses";
 import { useBudget } from "@contexts/BudgetContext";
 import { formatCurrency } from "@lib/currency";
 import {
@@ -43,9 +43,8 @@ export default function Analytics() {
 
   const fetchExpenses = async () => {
     try {
-      const res = await authFetch("/api/expenses");
-      const data = await res.json();
-      const expensesData = data.expenses || data.data || [];
+      const result = await getExpenses();
+      const expensesData = result.expenses || result.data || [];
       setExpenses(expensesData);
     } catch (error) {
       console.error("Failed to fetch expenses:", error);
