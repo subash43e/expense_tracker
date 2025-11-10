@@ -14,9 +14,18 @@ A modern, full-stack expense tracking application built with **Next.js 16 App Ro
 
 ## ✨ Features
 
+### Next.js 16 Native Features
+- **Error Boundaries**: Route-level error handling with `error.js` files
+- **Loading States**: Automatic Suspense boundaries with `loading.js`
+- **Not Found Pages**: Custom 404 handling with `not-found.js`
+- **Middleware**: Authentication and security at the edge
+- **File-Based Routing**: Intuitive folder structure for routes
+- **Server Components**: Optimized data fetching and rendering
+
 ### Authentication & Security
 - **Secure JWT Authentication**: httpOnly, SameSite=strict cookies (7-day expiry)
 - **XSS Protection**: Tokens never exposed to JavaScript
+- **Middleware Protection**: Route-level auth checks before rendering
 - **Session Management**: Automatic logout on 401 responses via global event system
 - **Password Validation**: Strong password requirements with real-time strength indicator
 
@@ -251,9 +260,24 @@ All endpoints require authentication (except register/login) via httpOnly cookie
 
 - **`Toast`** - Toast notifications via `ToastProvider`
 
-- **`ErrorBoundary`** - Catches React errors and displays fallback UI
+## 📚 Documentation
+
+- **[Next.js Features Guide](./docs/NEXTJS_FEATURES.md)** - Comprehensive guide to Next.js 16 features used in this project
+  - Error boundaries (`error.js`, `global-error.js`)
+  - Loading states (`loading.js`)
+  - Not found pages (`not-found.js`)
+  - Middleware for authentication
+  - File-based routing conventions
+  - Best practices and migration guide
 
 ## 🧪 Development Guidelines
+
+### Next.js Conventions
+- Use `error.js` for route-level error boundaries (not custom ErrorBoundary components)
+- Add `loading.js` for routes with async data fetching
+- Use `notFound()` function for 404 responses
+- Implement middleware for auth checks and security headers
+- Follow file-based routing conventions
 
 ### Code Style
 - Use PropTypes for component prop validation
