@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { registerUser } from "@/lib/users";
 import { registerSchema } from "@/lib/validations";
 import { ApiError, handleApi } from "@/lib/api/utils";
-import { validateCsrfToken } from "@/lib/security/csrf";
 
 export async function POST(req) {
   return handleApi(async () => {
-    validateCsrfToken(req);
     const body = await req.json();
     const { email, password } = registerSchema.parse(body);
 

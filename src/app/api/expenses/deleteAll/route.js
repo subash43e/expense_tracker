@@ -1,11 +1,9 @@
 import { NextResponse } from "next/server";
 import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
 import deleteAllExpenses from "../handlers/deleteAllExpenses";
-import { validateCsrfToken } from "@/lib/security/csrf";
 
 export async function POST(req) {
   return handleApi(async () => {
-    validateCsrfToken(req);
     const userId = ensureAuthenticated(req);
     await deleteAllExpenses(userId);
     return NextResponse.json(

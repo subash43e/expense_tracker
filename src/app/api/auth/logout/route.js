@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { validateCsrfToken, clearCsrfCookie } from "@/lib/security/csrf";
 
 export async function POST(req) {
   try {
-    validateCsrfToken(req);
     const response = NextResponse.json(
       { success: true, message: "Logged out successfully" },
       { status: 200 }
@@ -17,7 +15,6 @@ export async function POST(req) {
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
     });
-    clearCsrfCookie(response);
     return response;
   } catch (error) {
     return NextResponse.json({ 

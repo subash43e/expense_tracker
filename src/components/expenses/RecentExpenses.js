@@ -105,21 +105,17 @@ export default function RecentExpenses({
       const data = await res.json();
       
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to delete expense");
+        console.error(data.error || "Failed to delete expense");
       }
 
       if (onRefreshNeeded) {
         await onRefreshNeeded();
       }
+
     } catch (err) {
       console.error("Failed to delete expense:", err);
       setExpenses(previousExpenses);
-      toast({
-        title: "Error",
-        description: `Failed to delete expense: ${err.message}`,
-        variant: "destructive",
-        duration: 5000,
-      });
+    
     } finally {
       setIsDeleting(false);
       setExpenseToDelete(null);

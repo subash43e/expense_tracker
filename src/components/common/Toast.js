@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, createContext } from 'react';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle, AiOutlineClose } from 'react-icons/ai';
 
-const ToastContext = React.createContext();
+const ToastContext = createContext();
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);

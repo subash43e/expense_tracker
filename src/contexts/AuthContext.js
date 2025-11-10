@@ -2,7 +2,6 @@
 
 import React, { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { ensureCsrfToken, withCsrfHeader } from "@/lib/authFetch";
 
 export const AuthContext = createContext();
 
@@ -21,11 +20,9 @@ export function AuthProvider({ children }) {
         return;
       }
 
-      await ensureCsrfToken();
       const response = await fetch("/api/auth/me", {
         method: "GET",
-        headers: withCsrfHeader({ Authorization: `Bearer ${token}` }),
-        credentials: "include",
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
@@ -48,7 +45,6 @@ export function AuthProvider({ children }) {
     const bootstrap = async () => {
       setLoading(true);
       try {
-        await ensureCsrfToken();
         await validateToken();
       } finally {
         if (mounted) {
@@ -68,12 +64,10 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      await ensureCsrfToken();
       const response = await fetch("/api/auth/login", {
         method: "POST",
-        headers: withCsrfHeader({ "Content-Type": "application/json" }),
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
       });
 
       if (!response.ok) {
@@ -96,12 +90,10 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      await ensureCsrfToken();
       const response = await fetch("/api/auth/register", {
         method: "POST",
-        headers: withCsrfHeader({ "Content-Type": "application/json" }),
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
       });
 
       if (!response.ok) {
