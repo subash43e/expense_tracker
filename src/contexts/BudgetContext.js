@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+"use client";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { authFetch } from "@/lib/authFetch";
 
-export default function useBudget() {
+const BudgetContext = createContext(null);
+
+export function BudgetProvider({ children }) {
   const [budget, setBudget] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -29,18 +32,9 @@ export default function useBudget() {
 
   useEffect(() => {
     fetchBudget();
-
-    const handleBudgetUpdate = () => {
-      fetchBudget();
-    };
-    window.addEventListener("budgetUpdated", handleBudgetUpdate);
-
-    return () => {
-      window.removeEventListener("budgetUpdated", handleBudgetUpdate);
-    };
   }, [fetchBudget]);
 
-  return {
+  const value = {
     budget,
     currency: budget?.currency || "USD",
     monthlyLimit: budget?.monthlyLimit || null,
@@ -48,4 +42,14 @@ export default function useBudget() {
     error,
     refetch: fetchBudget,
   };
+
+  return <BudgetContext.Provider value={value}>{children}</BudgetContext.Provider>;
+}
+
+export function useBudget() {
+  const context = useContext(BudgetContext);
+  if (!context) {
+    throw new Error("useBudget must be used within a BudgetProvider");
+  }
+  return context;
 }

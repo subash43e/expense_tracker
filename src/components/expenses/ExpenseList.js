@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import Link from "next/link";
-import useBudget from "@/hooks/useBudget";
+import { useBudget } from "@/contexts/BudgetContext";
 import { formatCurrency } from "@/lib/currency";
 
 export default function ExpenseList({

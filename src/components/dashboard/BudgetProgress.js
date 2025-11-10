@@ -1,44 +1,11 @@
 "use client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
-import { authFetch } from "@/lib/authFetch";
 import { formatCurrency, getCurrencySymbol } from "@/lib/currency";
-
+import { useBudget } from "@/contexts/BudgetContext";
 export default function BudgetProgress({ expenses = [], isLoading, error }) {
-  const [budgetData, setBudgetData] = useState(null);
-  const [isBudgetLoading, setIsBudgetLoading] = useState(true);
-
-  const fetchBudget = useCallback(async () => {
-    try {
-      const res = await authFetch("/api/budgets");
-      const data = await res.json();
-
-      if (res.ok && data.budget) {
-        setBudgetData(data.budget);
-      } else {
-        setBudgetData(null);
-      }
-    } catch (error) {
-      console.error("Error fetching budget:", error);
-      setBudgetData(null);
-    } finally {
-      setIsBudgetLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchBudget();
-
-    const handleBudgetUpdate = () => {
-      fetchBudget();
-    };
-    window.addEventListener("budgetUpdated", handleBudgetUpdate);
-
-    return () => {
-      window.removeEventListener("budgetUpdated", handleBudgetUpdate);
-    };
-  }, [fetchBudget]);
+  const { budget: budgetData, isLoading: isBudgetLoading } = useBudget();
 
   const monthlyBudget = budgetData?.monthlyLimit || 5000;
   const currency = budgetData?.currency || "USD";

@@ -5,7 +5,7 @@ import { BsFillPencilFill, BsTrash3 } from "react-icons/bs";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
 import Link from "next/link";
 import { getCategoryIcon } from "@/lib/categories";
-import useBudget from "@/hooks/useBudget";
+import { useBudget } from "@/contexts/BudgetContext"; 
 import { formatCurrency } from "@/lib/currency";
 
 const getTimePeriod = (date) => {

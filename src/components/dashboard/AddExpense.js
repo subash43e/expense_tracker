@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { EXPENSE_CATEGORIES } from "@/lib/categories";
 import { authFetch } from "@/lib/authFetch";
 import { createExpenseSchema, formatZodErrors } from "@/lib/validations";
-import useBudget from "@/hooks/useBudget";
+import { useBudget } from "@/contexts/BudgetContext";
 import { getCurrencySymbol } from "@/lib/currency";
 import Alert from "@/components/common/Alert";
 import Spinner from "@/components/common/Spinner";

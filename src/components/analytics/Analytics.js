@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import ExportButton from "../common/ExportButton";
 import { authFetch } from "@/lib/authFetch";
-import useBudget from "@/hooks/useBudget";
+import { useBudget } from "@/contexts/BudgetContext";
 import { formatCurrency } from "@/lib/currency";
 import {
   BarChart,

@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { authFetch } from "@/lib/authFetch";
 import { createBudgetSchema, formatZodErrors } from "@/lib/validations";
 import { getCurrencySymbol } from "@/lib/currency";
+import { useBudget } from "@/contexts/BudgetContext";
 
 export default function BudgetManager() {
+  const { refetch: refetchBudgetContext } = useBudget();
   const [budget, setBudget] = useState(null);
   const [monthlyLimit, setMonthlyLimit] = useState("");
   const [currency, setCurrency] = useState("USD");
@@ -16,10 +18,8 @@ export default function BudgetManager() {
 
   useEffect(() => {
     fetchBudget();
-    console.log(fetchBudget());
   }, []);
 
-  console.log("Budget ", budget?.currency);
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => setMessage(null), 5000);
@@ -81,7 +81,7 @@ export default function BudgetManager() {
         setIsEditing(false);
         setMessage({ type: "success", text: data.message });
         
-        window.dispatchEvent(new Event("budgetUpdated"));
+        refetchBudgetContext();
       } else {
         setMessage({ type: "error", text: data.error || "Failed to save budget" });
       }
@@ -113,7 +113,7 @@ export default function BudgetManager() {
         setIsEditing(true);
         setMessage({ type: "success", text: data.message });
         
-        window.dispatchEvent(new Event("budgetUpdated"));
+        refetchBudgetContext();
       } else {
         setMessage({ type: "error", text: data.error || "Failed to delete budget" });
       }
