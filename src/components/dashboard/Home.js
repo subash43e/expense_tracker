@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import AddExpense from "./AddExpense";
 import BudgetProgress from "./BudgetProgress";
 import RecentExpenses from "../expenses/RecentExpenses";
@@ -18,10 +18,6 @@ export default function Home() {
     fetchExpenses();
   }, [fetchExpenses]);
 
-  const handleRefreshExpenses = useCallback(async () => {
-    await fetchExpenses();
-  }, [fetchExpenses]);
-
   return (
     <div className="flex bg-gray-50 dark:bg-gray-900 p-4 min-h-screen">
       <main className="flex-1">
@@ -38,7 +34,7 @@ export default function Home() {
         </section>
         <section className="mb-10">
           <h2 className="text-2xl text-gray-900 font-semibold mb-4 dark:text-white">Add Expense</h2>
-          <AddExpense onSuccess={handleRefreshExpenses} />
+          <AddExpense onSuccess={fetchExpenses} />
         </section>
         <section className="">
           <h2 className="text-2xl text-gray-900 font-semibold mb-4 dark:text-white">Recent Expenses</h2>
@@ -47,7 +43,7 @@ export default function Home() {
             setExpenses={setExpenses}
             loading={loading}
             error={error}
-            onRefreshNeeded={handleRefreshExpenses}
+            onRefreshNeeded={fetchExpenses}
           />
         </section>
       </main>

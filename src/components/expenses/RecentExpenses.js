@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import PropTypes from "prop-types";
 import useModalState from "@/hooks/useModalState";
@@ -122,8 +122,8 @@ export default function RecentExpenses({
     }
   };
 
-  const getFilteredExpenses = useCallback(() => {
-  let filtered = expensesList;
+  const getFilteredExpenses = () => {
+    let filtered = expensesList;
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
@@ -170,69 +170,49 @@ export default function RecentExpenses({
       });
     }
     return filtered;
-  }, [
-  expensesList,
-    searchQuery,
-    filterDate.filterYear,
-    filterDate.filterMonth,
-    filterDate.filterDay,
-  ]);
+  };
 
-  const getSortedExpenses = useCallback(
-    (filteredExpenses) => {
-      return [...filteredExpenses].sort((a, b) => {
-        let compareA, compareB;
+  const getSortedExpenses = (filteredExpenses) => {
+    return [...filteredExpenses].sort((a, b) => {
+      let compareA, compareB;
 
-        switch (sortBy) {
-          case "amount":
-            compareA = parseFloat(a.amount);
-            compareB = parseFloat(b.amount);
-            break;
-          case "description":
-            compareA = a.description.toLowerCase();
-            compareB = b.description.toLowerCase();
-            break;
-          case "category":
-            compareA = a.category.toLowerCase();
-            compareB = b.category.toLowerCase();
-            break;
-          case "date":
-          default:
-            compareA = new Date(a.date);
-            compareB = new Date(b.date);
-            break;
-        }
+      switch (sortBy) {
+        case "amount":
+          compareA = parseFloat(a.amount);
+          compareB = parseFloat(b.amount);
+          break;
+        case "description":
+          compareA = a.description.toLowerCase();
+          compareB = b.description.toLowerCase();
+          break;
+        case "category":
+          compareA = a.category.toLowerCase();
+          compareB = b.category.toLowerCase();
+          break;
+        case "date":
+        default:
+          compareA = new Date(a.date);
+          compareB = new Date(b.date);
+          break;
+      }
 
-        let comparison = 0;
-        if (compareA > compareB) {
-          comparison = 1;
-        } else if (compareA < compareB) {
-          comparison = -1;
-        }
+      let comparison = 0;
+      if (compareA > compareB) {
+        comparison = 1;
+      } else if (compareA < compareB) {
+        comparison = -1;
+      }
 
-        return sortOrder === "desc" ? comparison * -1 : comparison;
-      });
-    },
-    [sortBy, sortOrder]
-  );
+      return sortOrder === "desc" ? comparison * -1 : comparison;
+    });
+  };
 
-  const currentFilteredExpenses = useMemo(
-    () => getFilteredExpenses(),
-    [getFilteredExpenses]
-  );
-
-  const currentSortedExpenses = useMemo(
-    () => getSortedExpenses(currentFilteredExpenses),
-    [getSortedExpenses, currentFilteredExpenses]
-  );
-
-  const expensesToDisplay = useMemo(
-    () =>
-      pathname !== "/expenses"
-        ? currentSortedExpenses.slice(0, 10)
-        : currentSortedExpenses,
-    [currentSortedExpenses, pathname]
-  );
+  const currentFilteredExpenses = getFilteredExpenses();
+  const currentSortedExpenses = getSortedExpenses(currentFilteredExpenses);
+  const expensesToDisplay =
+    pathname !== "/expenses"
+      ? currentSortedExpenses.slice(0, 10)
+      : currentSortedExpenses;
 
   if (error) {
     return (

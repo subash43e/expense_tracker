@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { authFetch } from "@/lib/authFetch";
 
 const BudgetContext = createContext(null);
@@ -9,7 +9,7 @@ export function BudgetProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchBudget = useCallback(async () => {
+  const fetchBudget = async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -28,11 +28,11 @@ export function BudgetProvider({ children }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchBudget();
-  }, [fetchBudget]);
+  }, []);
 
   const value = {
     budget,

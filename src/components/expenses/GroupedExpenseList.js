@@ -65,10 +65,7 @@ export default function GroupedExpenseList({
     [expensesToDisplay]
   );
 
-  const totalAmount = useMemo(
-    () => expensesToDisplay.reduce((sum, expense) => sum + parseFloat(expense.amount || 0), 0),
-    [expensesToDisplay]
-  );
+  const totalAmount = expensesToDisplay.reduce((sum, expense) => sum + parseFloat(expense.amount || 0), 0);
 
   const [expandedMonths, setExpandedMonths] = useState({});
 
