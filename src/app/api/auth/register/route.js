@@ -9,15 +9,28 @@ export async function POST(req) {
     const { email, password } = registerSchema.parse(body);
 
     try {
-      const user = await registerUser(email, password);
-      return NextResponse.json(
+      const result = await registerUser(email, password);
+      
+      const response = NextResponse.json(
         {
           success: true,
           message: "User registered successfully",
-          user,
+          user: result.user,
         },
         { status: 201 }
       );
+      
+      response.cookies.set({
+        name: "token",
+        value: result.token,
+        httpOnly: true,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      });
+      
+      return response;
     } catch (error) {
       if (error instanceof Error && error.message === "User already exists") {
         throw new ApiError(400, error.message);

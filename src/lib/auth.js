@@ -8,12 +8,11 @@ const SECRET_KEY = process.env.JWT_SECRET;
 
 export function getUserIdFromRequest(request) {
   try {
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = request.cookies.get('token')?.value;
+    if (!token) {
       return null;
     }
 
-    const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, SECRET_KEY);
     return decoded.id;
   } catch (error) {

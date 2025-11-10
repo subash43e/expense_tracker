@@ -14,27 +14,19 @@ export function AuthProvider({ children }) {
 
   const validateToken = async () => {
     try {
-      const token = localStorage.getItem("expenseTrackerToken");
-      if (!token) {
-        setUser(null);
-        return;
-      }
-
       const response = await fetch("/api/auth/me", {
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
 
       if (response.ok) {
         const data = await response.json();
         setUser(data.user);
       } else {
-        localStorage.removeItem("expenseTrackerToken");
         setUser(null);
       }
     } catch (err) {
       console.error("Token validation failed:", err);
-      localStorage.removeItem("expenseTrackerToken");
       setUser(null);
     }
   };
@@ -68,6 +60,7 @@ export function AuthProvider({ children }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -76,7 +69,6 @@ export function AuthProvider({ children }) {
       }
 
       const data = await response.json();
-      localStorage.setItem("expenseTrackerToken", data.token);
       setUser({ id: data.user?.id, email: data.user?.email || email });
     } catch (err) {
       setError(err.message);
@@ -94,6 +86,7 @@ export function AuthProvider({ children }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       if (!response.ok) {
@@ -111,7 +104,6 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem("expenseTrackerToken");
     setUser(null);
     setError(null);
   };

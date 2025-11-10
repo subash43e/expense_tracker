@@ -20,9 +20,18 @@ export async function registerUser(email, password) {
   const newUser = new User({ email, passwordHash: hashedPassword });
   await newUser.save();
 
+  const token = jwt.sign(
+    { id: newUser._id, email: newUser.email }, 
+    SECRET_KEY, 
+    { expiresIn: '7d' }
+  );
+
   return {
-    id: newUser._id.toString(),
-    email: newUser.email
+    token,
+    user: {
+      id: newUser._id.toString(),
+      email: newUser.email
+    }
   };
 }
 

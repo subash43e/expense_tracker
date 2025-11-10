@@ -10,14 +10,26 @@ export async function POST(req) {
 
     try {
       const result = await loginUser(email, password);
-      return NextResponse.json(
+      
+      const response = NextResponse.json(
         {
           success: true,
-          token: result.token,
           user: result.user,
         },
         { status: 200 }
       );
+      
+      response.cookies.set({
+        name: "token",
+        value: result.token,
+        httpOnly: true,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      });
+      
+      return response;
     } catch (error) {
       if (error instanceof Error && error.message === "Invalid credentials") {
         throw new ApiError(401, error.message);
