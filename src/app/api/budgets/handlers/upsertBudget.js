@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
-import { upsertBudget } from "@/lib/budgets";
-import { createBudgetSchema } from "@/lib/validations";
+import { handleApi, ensureAuthenticated } from "@lib/api/utils";
+import { upsertBudget } from "@lib/budgets";
+import { createBudgetSchema } from "@lib/validations";
 
 export async function handleUpsertBudget(request) {
   return handleApi(

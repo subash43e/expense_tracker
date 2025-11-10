@@ -1,10 +1,10 @@
 "use client"
 
-import LayoutWrapper from '@/components/layout/LayoutWrapper';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { BudgetProvider } from '@/contexts/BudgetContext';
-import { DarkModeProvider } from '@/contexts/DarkModeContext';
-import { ToastProvider } from '@/components/common/Toast';
+import LayoutWrapper from '@components/layout/LayoutWrapper';
+import { AuthProvider } from '@contexts/AuthContext';
+import { BudgetProvider } from '@contexts/BudgetContext';
+import { DarkModeProvider } from '@contexts/DarkModeContext';
+import { ToastProvider } from '@components/common/Toast';
 import './globals.css';
 
 export default function RootLayout({ children }) {

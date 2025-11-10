@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { deleteExpense } from "@/lib/expenses";
+import { deleteExpense } from "@lib/expenses";
 import {
   ApiError,
   ensureAuthenticated,
   handleApi,
   resolveAndValidateObjectId,
-} from "@/lib/api/utils";
+} from "@lib/api/utils";
 
 export async function handleDeleteExpense(request, params) {
   return handleApi(async () => {

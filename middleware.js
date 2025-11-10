@@ -1,39 +1,15 @@
 import { NextResponse } from 'next/server';
 
 /**
- * Middleware for handling authentication and route protection
- * Runs before routes are rendered to check authentication state
+ * Middleware for security headers
+ * 
+ * Note: Authentication is now handled by route group layouts:
+ * - (auth)/layout.js - Protects /expenses, /analytics, /settings
+ * - (public)/layout.js - Redirects authenticated users from /login, /register
+ * 
+ * This middleware only adds security headers to all responses
  */
 export function middleware(request) {
-  const { pathname } = request.nextUrl;
-  
-  // Get the token from cookies
-  const token = request.cookies.get('token')?.value;
-  
-  // Define public paths that don't require authentication
-  const publicPaths = ['/login', '/register', '/'];
-  const isPublicPath = publicPaths.includes(pathname);
-  
-  // Define paths that should redirect authenticated users
-  const authPaths = ['/login', '/register'];
-  const isAuthPath = authPaths.includes(pathname);
-  
-  // If user is not authenticated and trying to access protected route
-  if (!token && !isPublicPath) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    url.searchParams.set('from', pathname); // Save original destination
-    return NextResponse.redirect(url);
-  }
-  
-  // If user is authenticated and trying to access login/register
-  if (token && isAuthPath) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/';
-    return NextResponse.redirect(url);
-  }
-  
-  // Add custom headers for security
   const response = NextResponse.next();
   
   // Security headers

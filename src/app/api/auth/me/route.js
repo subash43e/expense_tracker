@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { ensureAuthenticated, handleApi } from "@/lib/api/utils";
-import { getUserById } from "@/lib/users";
+import { ensureAuthenticated, handleApi } from "@lib/api/utils";
+import { getUserById } from "@lib/users";
 
 export async function GET(request) {
   return handleApi(async () => {

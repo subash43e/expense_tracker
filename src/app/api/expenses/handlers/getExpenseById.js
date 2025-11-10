@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getExpenseById } from "@/lib/expenses";
+import { getExpenseById } from "@lib/expenses";
 import {
   ApiError,
   ensureAuthenticated,
   handleApi,
   resolveAndValidateObjectId,
-} from "@/lib/api/utils";
+} from "@lib/api/utils";
 
 export async function handleGetExpenseById(request, params) {
   return handleApi(async () => {

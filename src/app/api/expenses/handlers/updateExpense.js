@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { updateExpense } from "@/lib/expenses";
-import { updateExpenseSchema } from "@/lib/validations";
+import { updateExpense } from "@lib/expenses";
+import { updateExpenseSchema } from "@lib/validations";
 import {
   ApiError,
   ensureAuthenticated,
   handleApi,
   resolveAndValidateObjectId,
-} from "@/lib/api/utils";
+} from "@lib/api/utils";
 
 export async function handleUpdateExpense(request, params) {
   return handleApi(async () => {

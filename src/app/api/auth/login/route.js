@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { loginUser } from "@/lib/users";
-import { loginSchema } from "@/lib/validations";
-import { ApiError, handleApi } from "@/lib/api/utils";
+import { loginUser } from "@lib/users";
+import { loginSchema } from "@lib/validations";
+import { ApiError, handleApi } from "@lib/api/utils";
 
 export async function POST(req) {
   return handleApi(async () => {

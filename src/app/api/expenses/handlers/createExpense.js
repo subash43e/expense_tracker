@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { createExpense } from "@/lib/expenses";
-import { createExpenseSchema } from "@/lib/validations";
-import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
+import { createExpense } from "@lib/expenses";
+import { createExpenseSchema } from "@lib/validations";
+import { handleApi, ensureAuthenticated } from "@lib/api/utils";
 
 export async function handleCreateExpense(request) {
   return handleApi(async () => {

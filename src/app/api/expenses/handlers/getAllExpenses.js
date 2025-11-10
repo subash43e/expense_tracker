@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getAllExpenses, getAllExpensesSimple } from "@/lib/expenses";
-import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
+import { getAllExpenses, getAllExpensesSimple } from "@lib/expenses";
+import { handleApi, ensureAuthenticated } from "@lib/api/utils";
 
 export async function handleGetAllExpenses(request) {
   return handleApi(async () => {

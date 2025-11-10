@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
-import { deleteBudget } from "@/lib/budgets";
+import { handleApi, ensureAuthenticated } from "@lib/api/utils";
+import { deleteBudget } from "@lib/budgets";
 
 export async function handleDeleteBudget(request) {
   return handleApi(

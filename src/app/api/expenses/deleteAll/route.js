@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { handleApi, ensureAuthenticated } from "@/lib/api/utils";
+import { handleApi, ensureAuthenticated } from "@lib/api/utils";
 import deleteAllExpenses from "../handlers/deleteAllExpenses";
 
 export async function POST(req) {

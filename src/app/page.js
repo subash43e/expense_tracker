@@ -1,9 +1,9 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import Home from "@/components/dashboard/Home";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import LandingPage from "@/components/landing/LandingPage";
+import { useAuth } from "@hooks/useAuth";
+import Home from "@components/dashboard/Home";
+import { ProtectedRoute } from "@components/common/ProtectedRoute";
+import LandingPage from "@components/landing/LandingPage";
 
 export default function Page() {
   const { isAuthenticated, loading } = useAuth();
