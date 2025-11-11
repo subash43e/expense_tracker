@@ -2,11 +2,21 @@ import dbConnect from "@lib/db";
 import Budget from "@models/Budget";
 import { ApiError } from "@lib/api/utils";
 
+/**
+ * Convert MongoDB document to plain object with stringified ObjectIds
+ */
+function serializeDocument(doc) {
+  if (!doc) return null;
+  
+  const serialized = JSON.parse(JSON.stringify(doc));
+  return serialized;
+}
+
 export async function getBudgetByUserId(userId) {
   await dbConnect();
 
-  const budget = await Budget.findOne({ userId });
-  return budget;
+  const budget = await Budget.findOne({ userId }).lean();
+  return serializeDocument(budget);
 }
 
 export async function createBudget(userId, budgetData) {
@@ -22,7 +32,7 @@ export async function createBudget(userId, budgetData) {
     ...budgetData,
   });
 
-  return budget;
+  return serializeDocument(budget.toObject());
 }
 
 export async function updateBudget(userId, updateData) {
@@ -38,7 +48,7 @@ export async function updateBudget(userId, updateData) {
     throw new ApiError(404, "Budget not found");
   }
 
-  return budget;
+  return serializeDocument(budget.toObject());
 }
 
 export async function deleteBudget(userId) {
@@ -50,7 +60,7 @@ export async function deleteBudget(userId) {
     throw new ApiError(404, "Budget not found");
   }
 
-  return budget;
+  return serializeDocument(budget.toObject());
 }
 
 export async function upsertBudget(userId, budgetData) {
@@ -62,5 +72,5 @@ export async function upsertBudget(userId, budgetData) {
     { new: true, upsert: true, runValidators: true }
   );
 
-  return budget;
+  return serializeDocument(budget.toObject());
 }

@@ -8,6 +8,16 @@ if (!SECRET_KEY) {
   throw new Error("JWT_SECRET is not defined. Please set it in the environment variables.");
 }
 
+/**
+ * Convert MongoDB document to plain object with stringified ObjectIds
+ */
+function serializeDocument(doc) {
+  if (!doc) return null;
+  
+  const serialized = JSON.parse(JSON.stringify(doc));
+  return serialized;
+}
+
 export async function registerUser(email, password) {
   await dbConnect();
 
@@ -66,13 +76,10 @@ export async function loginUser(email, password) {
 export async function getUserById(userId) {
   await dbConnect();
 
-  const user = await User.findById(userId).select('-passwordHash');
+  const user = await User.findById(userId).select('-passwordHash').lean();
   if (!user) {
     throw new Error('User not found');
   }
 
-  return {
-    id: user._id.toString(),
-    email: user.email
-  };
+  return serializeDocument(user);
 }
