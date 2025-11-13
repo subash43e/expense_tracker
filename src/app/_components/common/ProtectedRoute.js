@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import PropTypes from "prop-types";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@/app/_contexts/AuthContext";
 
 export function ProtectedRoute({ children }) {
   const router = useRouter();

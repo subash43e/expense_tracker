@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from "@/app/_contexts/AuthContext";
 import Sidebar from '@components/layout/Sidebar';
 
 export default function LayoutWrapper({ children }) {

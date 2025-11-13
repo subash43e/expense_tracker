@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@/app/_contexts/AuthContext";
 import Home from "@components/home/Home";
 import { ProtectedRoute } from "@components/common/ProtectedRoute";
 import LandingPage from "@components/home/LandingPage";

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Link from 'next/link';
 import { MdMenu, MdClose } from 'react-icons/md';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from "@/app/_contexts/AuthContext";
 
 export default function LandingNavigation({
   logoText = "Expense Tracker",

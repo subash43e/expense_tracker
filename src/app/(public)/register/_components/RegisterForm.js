@@ -8,7 +8,7 @@ import {
   AiOutlineCloseCircle,
   AiOutlineLoading3Quarters,
 } from "react-icons/ai";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@/app/_contexts/AuthContext";
 import {
   registerFormSchema,
   evaluatePasswordStrength,

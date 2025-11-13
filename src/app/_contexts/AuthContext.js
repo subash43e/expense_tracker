@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 
 export const AuthContext = createContext();
@@ -133,6 +133,20 @@ export function AuthProvider({ children }) {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const {
+    user,
+    loading,
+    error,
+    isAuthenticated,
+    login,
+    register,
+    logout,
+    clearError,
+  } = useContext(AuthContext);
+  return {user, loading,error,isAuthenticated, login, register,logout, clearError};
 }
 
 AuthProvider.propTypes = {

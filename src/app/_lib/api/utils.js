@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { requireAuth } from "@lib/auth";
-import { objectIdSchema } from "@lib/validations";
+import jwt from 'jsonwebtoken';
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET environment variable is required");
+}
+
+const SECRET_KEY = process.env.JWT_SECRET;
 
 export class ApiError extends Error {
   constructor(status, message, details = null) {
@@ -11,20 +16,19 @@ export class ApiError extends Error {
   }
 }
 
-export function ensureAuthenticated(request) {
-  const { userId, error } = requireAuth(request);
-  if (error) {
-    throw new ApiError(error.status ?? 401, error.message);
+export  function ensureAuthenticated(request) {
+  try {
+    const token = request.cookies?.get("token")?.value;
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const userId = decoded.id;
+    return userId;
+  } catch (err) {
+    if (err) {
+      throw new ApiError(401, `Unauthorized ${err}`);
+    }
   }
-  return userId;
 }
 
-export async function resolveAndValidateObjectId(params) {
-  const resolvedParams = await Promise.resolve(params);
-  const id = resolvedParams?.id;
-  objectIdSchema.parse(id);
-  return id;
-}
 
 export async function handleApi(handler, { logMessage } = {}) {
   try {

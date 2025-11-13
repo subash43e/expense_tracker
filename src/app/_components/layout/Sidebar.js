@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from "@/app/_contexts/AuthContext";
 import { AiOutlineLogout } from 'react-icons/ai';
 
 export default function Sidebar() {
