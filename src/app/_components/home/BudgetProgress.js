@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { BsTrophy } from "react-icons/bs";
 import { formatCurrency, getCurrencySymbol } from "@lib/currency";
 import { useBudget } from "@contexts/BudgetContext";
+
 export default function BudgetProgress({ expenses = [], isLoading, error }) {
   const { budget: budgetData, isLoading: isBudgetLoading } = useBudget();
 
@@ -104,7 +105,9 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
   if (isLoading || isBudgetLoading) {
     return (
       <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
-        <p className="text-gray-600 dark:text-gray-300">Calculating budget insights...</p>
+        <p className="text-gray-600 dark:text-gray-300">
+          Calculating budget insights...
+        </p>
       </div>
     );
   }
@@ -112,7 +115,9 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
   if (error) {
     return (
       <div className="bg-[#FFFFFF] dark:bg-[#1F2937] p-6 rounded-lg shadow-md border border-slate-300">
-        <p className="text-red-600 dark:text-red-400">Failed to load budget data: {error}</p>
+        <p className="text-red-600 dark:text-red-400">
+          Failed to load budget data: {error}
+        </p>
       </div>
     );
   }
@@ -153,7 +158,6 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
 
   return (
     <div className="space-y-4">
-      
       {shouldShowNotification && !dismissedNotification && (
         <div
           className={`p-4 rounded-lg border-l-4 ${
@@ -223,7 +227,6 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
         <div className="flex items-center mb-4 justify-center">
           <div className="flex items-center mb-4 mx-auto">
             <div className="mr-3">
-              
               <svg
                 className={`w-8 h-8 ${
                   isOverBudget ? "text-red-500" : "text-green-500"
@@ -258,10 +261,9 @@ export default function BudgetProgress({ expenses = [], isLoading, error }) {
               </p>
             </div>
           </div>
-          
         </div>
 
-        <div className="w-full  relative ">
+        <div className="w-full relative">
           <div className="overflow-hidden rounded-full h-4 mb-10 border">
             <div
               className={`${

@@ -1,21 +1,15 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import jwt from "jsonwebtoken";
 
-/**
- * Public Layout - Handles public routes like login and register
- * Redirects authenticated users to home page
- * 
- * Routes in this group:
- * - /login
- * - /register
- */
 export default async function PublicLayout({ children }) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("jwt-login")?.value;
+  const SECRET_KEY = process.env.JWT_SECRET;
 
-  // If already authenticated, redirect to home
+  const decoded = token ? jwt.verify(token, SECRET_KEY) : null;
   if (token) {
-    redirect('/');
+    redirect("/");
   }
 
   // Not authenticated, render public pages

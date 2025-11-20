@@ -103,9 +103,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
     setError(null);
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+    });
   };
 
   useEffect(() => {
@@ -146,7 +151,16 @@ export function useAuth() {
     logout,
     clearError,
   } = useContext(AuthContext);
-  return {user, loading,error,isAuthenticated, login, register,logout, clearError};
+  return {
+    user,
+    loading,
+    error,
+    isAuthenticated,
+    login,
+    register,
+    logout,
+    clearError,
+  };
 }
 
 AuthProvider.propTypes = {

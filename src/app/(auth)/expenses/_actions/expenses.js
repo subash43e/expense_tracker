@@ -25,7 +25,7 @@ const SECRET_KEY = process.env.JWT_SECRET;
  */
 async function getUserId() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get('jwt-login');
 
   if (!token) {
     throw new Error('Unauthorized');

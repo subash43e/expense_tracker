@@ -21,7 +21,7 @@ export async function POST(req) {
       );
       
       response.cookies.set({
-        name: "token",
+        name: "jwt-login",
         value: result.token,
         httpOnly: true,
         path: "/",

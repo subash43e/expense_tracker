@@ -6,15 +6,7 @@ export async function POST(req) {
       { success: true, message: "Logged out successfully" },
       { status: 200 }
     );
-    response.cookies.set({
-      name: "token",
-      value: "",
-      httpOnly: true,
-      path: "/",
-      maxAge: 0,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-    });
+    response.cookies.delete('jwt-login')
     return response;
   } catch (error) {
     return NextResponse.json({ 

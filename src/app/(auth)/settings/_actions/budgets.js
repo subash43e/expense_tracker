@@ -1,14 +1,14 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
-import { revalidatePath } from 'next/cache';
-import jwt from 'jsonwebtoken';
+import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
+import jwt from "jsonwebtoken";
 import {
   getBudgetByUserId,
   upsertBudget as upsertBudgetDb,
   deleteBudget as deleteBudgetDb,
-} from '@lib/budgets';
-import { createBudgetSchema } from '@lib/validations';
+} from "@lib/budgets";
+import { createBudgetSchema } from "@lib/validations";
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -18,17 +18,17 @@ const SECRET_KEY = process.env.JWT_SECRET;
  */
 async function getUserId() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token');
+  const token = cookieStore.get("jwt-login");
 
   if (!token) {
-    throw new Error('Unauthorized');
+    throw new Error("Unauthorized");
   }
 
   try {
     const decoded = jwt.verify(token.value, SECRET_KEY);
     return decoded.id;
   } catch (error) {
-    throw new Error('Invalid token');
+    throw new Error("Invalid token :", error);
   }
 }
 
@@ -45,10 +45,10 @@ export async function getBudget() {
       budget: budget || null,
     };
   } catch (error) {
-    console.error('Error fetching budget:', error);
+    console.error("Error fetching budget:", error);
     return {
       success: false,
-      error: error.message || 'Failed to fetch budget',
+      error: error.message || "Failed to fetch budget",
     };
   }
 }
@@ -67,29 +67,29 @@ export async function saveBudget(data) {
     const budget = await upsertBudgetDb(userId, validatedData);
 
     // Revalidate pages that display budget
-    revalidatePath('/');
-    revalidatePath('/settings');
-    revalidatePath('/analytics');
+    revalidatePath("/");
+    revalidatePath("/settings");
+    revalidatePath("/analytics");
 
     return {
       success: true,
       budget,
-      message: 'Budget saved successfully',
+      message: "Budget saved successfully",
     };
   } catch (error) {
-    console.error('Error saving budget:', error);
+    console.error("Error saving budget:", error);
 
-    if (error.name === 'ZodError') {
+    if (error.name === "ZodError") {
       return {
         success: false,
-        error: 'Validation failed',
+        error: "Validation failed",
         errors: error.errors,
       };
     }
 
     return {
       success: false,
-      error: error.message || 'Failed to save budget',
+      error: error.message || "Failed to save budget",
     };
   }
 }
@@ -105,24 +105,24 @@ export async function deleteBudget() {
     if (!budget) {
       return {
         success: false,
-        error: 'Budget not found',
+        error: "Budget not found",
       };
     }
 
     // Revalidate pages
-    revalidatePath('/');
-    revalidatePath('/settings');
-    revalidatePath('/analytics');
+    revalidatePath("/");
+    revalidatePath("/settings");
+    revalidatePath("/analytics");
 
     return {
       success: true,
-      message: 'Budget deleted successfully',
+      message: "Budget deleted successfully",
     };
   } catch (error) {
-    console.error('Error deleting budget:', error);
+    console.error("Error deleting budget:", error);
     return {
       success: false,
-      error: error.message || 'Failed to delete budget',
+      error: error.message || "Failed to delete budget",
     };
   }
 }

@@ -18,7 +18,7 @@ export class ApiError extends Error {
 
 export  function ensureAuthenticated(request) {
   try {
-    const token = request.cookies?.get("token")?.value;
+    const token = request.cookies?.get("jwt-login")?.value;
     const decoded = jwt.verify(token, SECRET_KEY);
     const userId = decoded.id;
     return userId;
