@@ -8,7 +8,7 @@ import { useAuth } from "@/app/_contexts/AuthContext";
 export function ProtectedRoute({ children }) {
   const router = useRouter();
   const { isAuthenticated, loading } = useAuth();
-
+  
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       router.push("/login");

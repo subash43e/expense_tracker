@@ -21,6 +21,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setUser(data.user);
       } else {
         setUser(null);
@@ -113,18 +114,7 @@ export function AuthProvider({ children }) {
     });
   };
 
-  useEffect(() => {
-    const handleUnauthorized = () => {
-      setError("Session expired. Please log in again.");
-      setUser(null);
-    };
 
-    window.addEventListener("auth:unauthorized", handleUnauthorized);
-
-    return () => {
-      window.removeEventListener("auth:unauthorized", handleUnauthorized);
-    };
-  }, []);
 
   const value = {
     user,
